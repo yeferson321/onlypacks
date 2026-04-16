@@ -1,0 +1,234 @@
+---
+import type { Profile } from '@/types/ui';
+import IconVerification from '@/icons/outline/IconVerification.svg';
+import IconPhoto from '@/icons/outline/IconPhoto.svg';
+import IconVideoCamera from '@/icons/outline/IconVideoCamera.svg';
+import IconSpeakerWave from '@/icons/outline/IconSpeakerWave.svg';
+import IconHeart from '@/icons/outline/IconHeart.svg';
+import IconBars3Right from '@/icons/outline/IconBars3Right.svg';
+import IconLink from '@/icons/outline/IconLink.svg';
+import ProfileCarousel from '@/components/ProfileCarousel.astro';
+
+interface Props {
+	profile: Profile;
+};
+
+const { profile } = Astro.props;
+
+const formatNumber = (number: number) => {
+	return new Intl.NumberFormat("es", {
+		notation: "compact",
+		maximumFractionDigits: 1,
+	}).format(number);
+};
+---
+
+<div class="relative h-145">
+
+	<nav class="absolute top-0 z-20 w-full flex justify-between items-start px-5 py-4">
+
+		<div> 
+			<div class="inline-flex items-center">
+				<h1 class="me-1.5 text-xl font-medium text-white">{profile.name}</h1>
+				{profile.isVerified === true && (
+					<IconVerification stroke-width="1.8" width="22" height="22" class="stroke-blue-500"/>
+				)}
+			</div>
+			
+			<ul class="mt-1 flex gap-3 text-base font-medium text-white">
+				
+				{profile.stats.images > 0 && (
+					<li class="inline-flex items-center">
+						<IconPhoto stroke-width="1.8" width="18" height="18" class="stroke-white"/>
+						<span class="ms-1">{profile.stats.images}</span>
+					</li> 
+				)}
+			
+				{profile.stats.videos > 0 && (
+					<li class="inline-flex items-center">
+						<IconVideoCamera stroke-width="1.8" width="18" height="18" class="stroke-white"/>
+						<span class="ms-1">{profile.stats.videos}</span>
+					</li>
+				)}
+			
+				{profile.stats.audios > 0 && (
+					<li class="inline-flex items-center">
+						<IconSpeakerWave stroke-width="1.8" width="18" height="18" class="stroke-white"/>
+						<span class="ms-1">{profile.stats.audios}</span>
+					</li>
+				)}
+
+				{profile.stats.likes > 0 && (
+					<li class="inline-flex items-center">
+						<IconHeart stroke-width="1.8" width="18" height="18" class="stroke-white"/>
+						<span class="ms-1">{formatNumber(profile.stats.likes)}</span>
+					</li>
+				)}
+			</ul>
+
+		</div>
+
+		<button type="button">
+			<IconBars3Right stroke-width="1.6" width="28" height="28" class="stroke-white"/>
+		</button>
+		
+	</nav>
+
+	<div class="absolute bottom-5 z-20 w-full px-5 py-4">
+
+		<h2 class="text-center righteous-regular text-3xl font-medium text-white">{profile.username}</h2>
+
+		<div class="mt-1 flex items-center justify-center">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" width="18" height="18" class="stroke-white">
+			  	<path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+			  	<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+			</svg>
+			<p class="ms-1 text-base font-medium text-white">NYC / Miami</p>
+		</div>
+
+		<div class="mt-4">
+
+			<div class="flex justify-center gap-3">
+
+				{profile.activeSubscription === false && (
+					<button type="button" class="px-5 py-2 rounded-full text-base font-semibold text-white bg-blue-500/90 hover:bg-blue-500 transition-colors duration-300 ease-in-out">
+						Suscríbete por 31 días
+					</button>
+				)}
+
+				{profile.activeSubscription === true && (
+					<button type="button" class="inline-flex items-center py-2.5 pl-2.5 pr-3 rounded-full bg-blue-500/90 hover:bg-blue-500 transition-colors duration-300 ease-in-out">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"  stroke="currentColor" stroke-width="1.8" width="24" height="24" class="stroke-white">
+  							<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+						</svg>
+						<span class="ms-1 text-base font-medium text-white">Enviar regalo</span>
+					</button>
+				)}
+			
+				<button type="button" class="group p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/20 transition-colors duration-300 ease-in-out">
+					<IconHeart stroke-width="1.8" width="26" height="26" class="stroke-blue-500 group-hover:stroke-blue-500"/>
+				</button>
+
+				<button type="button" id="share-button" class="group p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/20 transition-colors duration-300 ease-in-out">
+					<IconLink stroke-width="1.8" width="26" height="26" class="stroke-blue-500 group-hover:stroke-blue-500"/>
+				</button>
+
+			</div>
+
+			{profile.activeSubscription === false && (
+				<p class="mt-3 text-center text-sm font-medium text-white">$ 8.900 al mes. Puedes cancelar en cualquier momento. Aplica terminos y condiciones.</p>
+			)}
+
+		</div>
+
+		<p class="mt-4 text-center text-base text-white">{profile.presentation}</p>
+
+		<div class="mt-2 flex justify-center gap-3 text-base font-medium text-blue-500">
+			{profile.socialLinks.map(({ platform, url }) => (
+				<a href={url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center">
+					<IconLink stroke-width="1.8" width="18" height="18" class="stroke-blue-500"/>
+					<span class="ms-1">{platform}</span>
+				</a>
+	  		))}
+		</div>
+
+	</div>
+	
+	<ProfileCarousel stories={profile.stories} />
+
+
+<!-- 	<div class="relative w-full h-145 overflow-hidden rounded-b-4xl">
+
+		<ProfileCarousel className="flex h-full" ariaLabel="Carousel de historias">
+			{profile.stories.map((storie: string, index: number) => ( 
+				<div class="relative w-full h-full shrink-0" data-carousel-item> 
+					<img src={storie} width="104" height="580" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "low"} decoding={index === 0 ? "auto" : "async"} crossorigin="anonymous" class="w-full h-full object-cover object-[50%_10%]" alt={`Historia ${index + 1}`}/>
+					<div class="pointer-events-none absolute inset-0"></div>
+				</div> 
+			))}
+		</ProfileCarousel>
+		
+	</div> -->
+
+</div>
+
+<script>
+const shareButton = document.getElementById("share-button");
+
+shareButton?.addEventListener("click", async () => {
+  	if (navigator.share) {
+  	  	try {
+  	  	  	await navigator.share({
+  	  	  	  	title: document.title,
+  	  	  	  	text: "Mira esto",
+  	  	  	  	url: window.location.href,
+  	  	  	});
+  	  	} catch (error) {
+  	  	  	alert("Error sharing:", error);
+  	  	}
+  	} else {
+  	  	navigator.clipboard.writeText(window.location.href);
+  		alert("Link copiado al portapapeles");
+  	}
+});
+
+	const updatePosition = () => {
+/* 	if (autoScroll) clearInterval(autoScroll); */
+/* 	index = Math.max(0, index + delta); */
+/* 	if (currentIndex < 0) currentIndex = 0;
+
+    applyTransform(); */
+};
+
+
+/* profileCarousel.addEventListener('touchstart', (event) => startX = event.touches[0].clientX, { passive: true });
+
+	import { getAverageColor } from '@/utils/getAverageColor';
+	
+		carouselItems.forEach(async (carouselItem) => {
+		const img = carouselItem.firstElementChild as HTMLImageElement;
+		const overlay = carouselItem.lastElementChild as HTMLDivElement;
+	
+		await img.decode();
+	    const { r, g, b } = getAverageColor(img);
+	
+	  	overlay.style.background = `
+	  	    linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 20%),
+	  	    linear-gradient(to top, rgba(${r},${g},${b},0.9), transparent 50%)
+	  	`;
+	});
+	
+profileCarousel.addEventListener('touchend', (event) => {
+  	const delta = startX - event.changedTouches[0].clientX;
+  	if (Math.abs(delta) < 50) return;
+	currentIndex += delta > 0 ? 1 : -1;
+  	updatePosition();
+});
+
+profileCarousel.addEventListener("wheel", limitExecution((event: WheelEvent) => {
+    const { deltaX, deltaY } = event;
+  	if (Math.abs(deltaX) < Math.abs(deltaY) || Math.abs(deltaX) < 50) return;
+
+    event.preventDefault();
+	currentIndex += deltaX > 0 ? 1 : -1;
+    updatePosition();
+}, 300), { passive: false });
+
+window.addEventListener("resize", limitExecution(() => {
+    carouselWidth = profileCarousel.parentElement.offsetWidth; 
+    /* applyTransform(false);
+}, 100));
+
+ */
+
+</script>
+
+
+<!-- <div class="flex items-center gap-4">
+
+			<div class="w-26 h-26 p-0.5 rounded-full bg-white">
+	  			<img src={data.imgPerfil} width="104" height="104" class="w-full h-full rounded-full object-cover"/>
+			</div>
+
+		</div>
+ -->

@@ -1,0 +1,147 @@
+---
+import type { ImageData } from '@/types/ui';
+
+interface Props {
+	stories: ImageData[]
+};
+
+const { stories } = Astro.props;
+const lastCloneStory = stories[0];
+---
+
+<div id="profile-carousel" class="relative h-full" role="region" aria-roledescription="carousel" aria-label="Carrusel de historias">
+
+	<!-- Carousel wrapper -->
+	<div class="h-full rounded-b-4xl overflow-hidden">
+
+		<div class="flex h-full" data-carousel-wrapper>
+			{stories.map((storie: ImageData, index: number) => (
+			
+				<div id={`Historia-${index + 1}`} class="relative w-full h-full shrink-0" aria-hidden={index === 0 ? "false" : "true"} data-carousel-item> 
+					<img src={storie.url} width="326" height="580" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "low"} decoding={index === 0 ? "auto" : "async"} crossorigin="anonymous" class="w-full h-full object-cover object-[50%_10%]" alt={`Historia ${index + 1} de ${stories.length}`} />
+					<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%),	linear-gradient(to top, rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1), transparent 50%)`}></div>
+					<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%),	linear-gradient(to top, rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1), transparent 50%)`}></div>
+				</div> 
+				
+			))}
+			
+			<!-- Clone slide (hidden) -->
+			<div class="relative w-full h-full shrink-0" aria-hidden="true" data-carousel-item> 
+				<img src={lastCloneStory.url} width="326" height="580" loading="lazy" fetchpriority="low" decoding="async" crossorigin="anonymous" class="w-full h-full object-cover object-[50%_10%]" alt={`Historia 1 de ${stories.length}`}/>
+				<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%), linear-gradient(to top, rgba(${lastCloneStory.avgColor.r},${lastCloneStory.avgColor.g},${lastCloneStory.avgColor.b},1), transparent 48%)`}></div>
+				<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%), linear-gradient(to top, rgba(${lastCloneStory.avgColor.r},${lastCloneStory.avgColor.g},${lastCloneStory.avgColor.b},1), transparent 48%)`}></div>
+			</div> 
+			
+		</div>
+
+	</div>
+
+	<!-- Slider indicators -->
+	<div class="absolute flex items-center z-10 -translate-x-1/2 bottom-3 left-1/2 space-x-3" aria-label="Navegación del carrusel">
+		{stories.map((_, index) => (
+			<button type="button" class={`w-4 h-1 aria-current:w-6 rounded-full bg-white aria-current:bg-white/50 transition-all duration-300 ease-in-out"}`} aria-current={index === 0 ? "true" : "false"} aria-controls={`Historia-${index + 1}`} aria-label={`Ir a historia ${index + 1}`} data-carousel-indicator={index}/>
+		))}
+	</div>
+
+	<!-- Slider controls -->
+    <button type="button" class="absolute top-0 inset-s-0 z-10 h-full px-6" aria-controls="profile-carousel" aria-label="Ir a la historia anterior" data-carousel-prev>
+    </button>
+    <button type="button" class="absolute top-0 inset-e-0 z-10 h-full px-6" aria-controls="profile-carousel" aria-label="Ir a la siguiente historia" data-carousel-next>
+    </button>
+</div>
+
+<script>
+	import { limitExecution } from '@/utils/limitExecution';
+
+	const profileCarousel = document.getElementById("profile-carousel");
+	if (!profileCarousel) throw new Error('Element id="profile-carousel" not found');
+	
+	const carouselWrapper = profileCarousel.querySelector<HTMLDivElement>("[data-carousel-wrapper]");
+	const carouselItems = carouselWrapper.querySelectorAll<HTMLDivElement>("[data-carousel-item]");
+
+	const carouselIndicators = profileCarousel.querySelectorAll<HTMLButtonElement>("[data-carousel-indicator]");
+	const prevButtonElement = profileCarousel.querySelector<HTMLButtonElement>("[data-carousel-prev]");
+	const nextButtonElement = profileCarousel.querySelector<HTMLButtonElement>("[data-carousel-next]");
+
+	const autoScrollTime = 4000;
+	const totalItems = carouselItems.length - 1;
+	let carouselWidth = carouselWrapper.parentElement!.offsetWidth;
+	let autoScroll: ReturnType<typeof setInterval> | null = null;
+	let currentIndex = 0;
+	let isAnimating = false;
+
+	const updateIndicators = () => {
+		const realIndex = currentIndex === totalItems ? 0 : currentIndex;
+	    carouselIndicators.forEach((indicator, index) => indicator.setAttribute("aria-current", index === realIndex ? "true" : "false"));
+	};
+	
+	const applyTransform = (newCurrentIndex: number, animate = true) => {
+		if (newCurrentIndex < 0) return;
+		currentIndex = newCurrentIndex;
+
+		isAnimating = true;
+		carouselWrapper.classList.toggle("transition-disabled", !animate);
+		carouselWrapper.style.transform = `translateX(-${currentIndex * carouselWidth}px)`;
+	
+		updateIndicators();
+	};
+	
+	carouselWrapper.addEventListener("transitionend", () => {
+	    if (currentIndex === totalItems) applyTransform(0, false);
+		isAnimating = false;
+	});
+	
+	const stopAutoScroll = () => {
+		if (!autoScroll) return;
+		clearInterval(autoScroll);
+		autoScroll = null;
+	};
+	
+/* 	autoScroll = setInterval(() => {
+	  	applyTransform(++currentIndex);
+	
+	  	if (currentIndex === totalItems) stopAutoScroll();
+	}, autoScrollTime);
+	 */
+
+/* 	profileCarousel.addEventListener("focusin", stopAutoScroll);
+
+profileCarousel.addEventListener("focus", stopAutoScroll, true);
+ */
+
+	carouselIndicators.forEach((indicator) => {
+		indicator.addEventListener("click", () => {
+			stopAutoScroll();
+			applyTransform(Number(indicator.dataset.carouselIndicator));
+		});
+	});
+
+	prevButtonElement?.addEventListener("click", () => {
+		if (isAnimating) return;
+		stopAutoScroll();
+		applyTransform(currentIndex - 1);
+	});
+
+	nextButtonElement?.addEventListener("click", () => {
+		if (isAnimating) return;
+		stopAutoScroll();
+		applyTransform(currentIndex + 1);
+	});
+	
+	window.addEventListener("resize", limitExecution(() => {
+	    carouselWidth = carouselWrapper.parentElement!.offsetWidth; 
+	    applyTransform(currentIndex, false);
+	}, 100));
+</script>
+
+<style>
+[data-carousel-wrapper] {
+	transition: transform var(--transition-duration) var(--transition-timing);
+	will-change: transform;
+}
+
+[data-carousel-wrapper].transition-disabled {
+    transition: none;
+}
+
+</style>

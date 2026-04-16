@@ -1,0 +1,53 @@
+---
+export const prerender = false;
+
+import ProfileLayout from '@/layouts/ProfileLayout.astro';
+
+import Gallery from '@/components/Gallery.astro';
+
+import { GalleryReact } from '@/components/GalleryReact';
+
+const { username, tab } = Astro.params;
+
+type PostType = "image" | "video" | "audio";
+
+interface Post {
+  type: PostType;
+  url: string;
+  postId: string;
+}
+const videos = [
+  "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
+  "https://samplelib.com/lib/preview/mp4/sample-10s.mp4",
+  "https://samplelib.com/lib/preview/mp4/sample-15s.mp4",
+  "https://samplelib.com/lib/preview/mp4/sample-20s.mp4"
+];
+
+const posts: Post[] = Array.from({ length: 200 }, (_, i) => {
+  const type = ["image","video","audio"][i % 3] as PostType;
+
+  return {
+    type,
+    url:
+      type === "video"
+        ? "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
+        : `https://picsum.photos/seed/post-${i}/400`,
+    postId: `post-${i}`
+  };
+});
+/* console.log("index username") */
+---
+
+<ProfileLayout username={username} tab={tab} >
+    <!-- <h1 class="text-red-500">{username}</h1> -->
+
+<!--     <GalleryReact username={username}, tab={tab}, posts={posts} client:load server:defer>
+        <div slot="fallback" class="grid grid-cols-2 md:grid-cols-3 gap-2 px-4">
+            {Array.from({ length: 12 }).map(() => (
+                <div class="aspect-square bg-red-200 rounded-2xl animate-pulse"></div>
+            ))}
+        </div>
+    </GalleryReact>  -->
+    
+    <!-- <Gallery username={username} tab={tab} posts={posts} /> -->
+</ProfileLayout>

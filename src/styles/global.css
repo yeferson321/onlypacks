@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* custom scrollbar */
+/* ::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 4px;
+    padding: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+} */
+
+:root {
+    --transition-duration: 300ms;
+    --transition-timing: ease-in-out;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* custom scrollbar */
+@media (pointer: fine) {
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        margin-block: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 24px;
+        border: 0px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* hide-scrollbar */
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.righteous-regular {
+  	font-family: "Righteous", sans-serif;
+  	font-weight: 400;
+  	font-style: normal;
+}

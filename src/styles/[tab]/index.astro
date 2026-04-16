@@ -1,0 +1,48 @@
+---
+export const prerender = false;
+
+import ProfileLayout from '@/layouts/ProfileLayout.astro';
+
+import Gallery from '@/components/Gallery.astro';
+
+const { username, tab } = Astro.params;
+
+const validTabs: PostType[] = ["image", "video", "audio"];
+
+if (!validTabs.includes(tab as PostType)) {
+    console.info("redirect tab")
+    return Astro.redirect(`/${username}`);
+}
+
+type PostType = "image" | "video" | "audio";
+
+interface Post {
+  type: PostType;
+  url: string;
+  postId: string;
+}
+
+const posts: Post[] = [
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg", postId: "p9f3k2a1" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg", postId: "m7x4d9q2" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg", postId: "z8c1n5t4" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg", postId: "r2k7w0b6" },
+    { type: "video", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg", postId: "y5p3h8l9" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg", postId: "d4s6j1x7" },
+    { type: "video", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg", postId: "u8q2v5m3" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg", postId: "c1z9e4t8" },
+    { type: "audio", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg", postId: "g6b2y7n5" },
+    { type: "audio", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg", postId: "h3k8r1w4" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg", postId: "t9m5c2p7" },
+    { type: "video", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg", postId: "v4d7s0q1" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg", postId: "x6l1z8b3" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg", postId: "n2f9p4k6" },
+    { type: "image", url: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg", postId: "w7c3m5y8" }
+];
+---
+
+<ProfileLayout username={username}>
+    <h1 class="text-red-500">{tab}</h1>
+
+    <Gallery username={username} tab={tab} posts={posts}/>
+</ProfileLayout>

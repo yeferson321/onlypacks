@@ -1,0 +1,77 @@
+---
+import '@/styles/global.css';
+import Profile from '@/components/Profile.astro';
+import ProfileTabs from '@/components/ProfileTabs.astro';
+
+/* import { ClientRouter } from 'astro:transitions'; */
+
+const data = {
+	activeSubscription: true,
+	name: "Sofia Palmer",
+	username: "Sofiapalmer",
+	isVerified: true,
+	stats: {
+		images: 30,
+		videos: 6,
+		audios: 1,
+		likes: 6000,
+	},
+	socialLinks: [
+		{ platform: "Instagram", url: "https://instagram.com" },
+		{ platform: "Onlyfans", url: "https://onlyfans.com" },
+		{ platform: "Paypal", url: "https://paypal.com" }
+	],
+	presentation: "Oh no.. encontraste mi pequeña pagina secreta, no soy tan inocente como parece 🤭",
+	stories: [
+		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/587945739_18035665655726783_481255841642948261_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzc4NDY1MDk0NDQyMDU3NjY4OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=v0GguVqVFioQ7kNvwHe7CvI&_nc_oc=AdqXo30casHi2VhXVOSulPcMzHs4lis4JfQGPCpa4E0hpwgZKQSGbKRRIEZjlFoUEYg&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=YxLmfwnJRZWpr0gwgisVPQ&_nc_ss=7a32e&oh=00_Af1m45c0x8OEV-SHrIn9KA7ohwJiyqQh--JHD2oLgcWABQ&oe=69E29E6A", avgColor: { "r": 35, "g": 5, "b": 0 } }, 
+		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/640472583_18044292485726783_919247564699627058_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzg0MTE4OTQ0Njc1ODc1NTgzOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=0OMg_3c8b_oQ7kNvwH7gwyX&_nc_oc=AdpSBSOLdgqzXf-YKZBxFYhWGkvmZwOcggz8rBrKwG9LV2ndUQzjk6oWIf5TpuDua6A&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=KeBJV8aHl5DJatMkeuauJg&_nc_ss=7a32e&oh=00_Af2oWKWaWP_gFEv4vYsTqVRbjftpPNzJPe6S8g0wYjkzfg&oe=69E27599", avgColor: { "r": 125, "g": 108, "b": 104 } },
+		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/545350537_18025204571726783_2718374900724780589_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzcxODYyOTQzMTE4Mzk4MTQ2NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=AX6NKkmbr2sQ7kNvwEQIyB-&_nc_oc=AdqUPLs36I10gj2nidDx-QyiZug7XWkaN3YmSBRXdRSLZvXK01Ty-wudCuEHgcnTv2Q&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=PJxklItrZs6BvIMwgF4Jbg&_nc_ss=7a32e&oh=00_Af1iZtmZjAEK4mFfIpEVz1VZyf6fqGfDOnB7LsfbrcCLhA&oe=69E28697", avgColor: { "r": 0, "g": 6, "b": 29 } },
+		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.75761-15/504518227_18015619541726783_5972700282659333120_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=MzY1NzAxNDY0NjkwNDM3NjYxMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkxNC5zZHIuQzMifQ%3D%3D&_nc_ohc=SF8vDrVLfJIQ7kNvwGmkcxn&_nc_oc=AdpYHtCt0lOpk9aykq0gN8AdUGqpk04lQei8moLjVL4OnAqSRx4Jq5Mw-6urn5uoVWo&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=envJZ2wGHwXgDucsioczzw&_nc_ss=7a32e&oh=00_Af0Ss2XTEGNLEuWpll809niz6KG7evkek1L6-o4l2bJKZQ&oe=69E28E8B", avgColor: { "r": 105, "g": 50, "b": 18 } },
+
+/* 		"https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/545350537_18025204571726783_2718374900724780589_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzcxODYyOTQzMTE4Mzk4MTQ2NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=H1iSMM_oZk8Q7kNvwGOTyYG&_nc_oc=Adq_4s0QRfLt6Av3hdZyblBlXA9CZYFdxu9ZsxVhy3JezyGoao_mANneo_SeQjfgud8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=jRdmZi_VW2XN2R5qeJVoUQ&_nc_ss=7a32e&oh=00_AfwNnJyx1GPN7nYxheGDAnvPV-fzkbsJ9RGvdNXfdqjUEA&oe=69CDA6D7",
+		"https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/640472583_18044292485726783_919247564699627058_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzg0MTE4OTQ0Njc1ODc1NTgzOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=eX7n8zi3pEkQ7kNvwHh-Suy&_nc_oc=AdqVOAJGpGZ0Zau3IpEmEg7nYppNwSD0ANbXxALuBPMowdqHl8I55FrgsGRqSnfcWZI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=Qb81ez5OU25eiqqJjmMf5A&_nc_ss=7a32e&oh=00_AfxFl1OagrGsS_BwHnrR3sPHj4pUoAtlZ5DSY4CNiKU6dg&oe=69CDCE19" */
+	],
+	/* profileImage: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/651445088_17938961895016264_4291332673574554828_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzUwMDcxNjI1OTE1MzQxNTQ5MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTc5OS5zZHIuQzMifQ%3D%3D&_nc_ohc=Z9n-sr5p0mkQ7kNvwExhZoN&_nc_oc=AdqEPsRsWw_kDkSjx4hRqxaaV-2hhP2e5wJUf9h4i0BQjCtRma01O_A8NPg2JysBPGY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=j0c3sc4NTMMnH2vGIOVNqQ&_nc_ss=7a32e&oh=00_Afzvo7SLsB9wqCLDEYi3lvfco1qn8WQ7CIdwXFylNf9r2w&oe=69C9B981",
+	coverImage: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/615560080_18566524399004734_7689088172594112968_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzgwODg5MTc3MjQ4MDA0NDEyNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=p6n7HvH-l9EQ7kNvwEPMjce&_nc_oc=AdqYACr9GepWmsegvjqTwhQTNuMv0Fgcu1WtEKVPRuOyuKqK2RmBTnijiIdgKZ_D5W0&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=ikwhNGhmeE_qekCwOYJuKg&_nc_ss=7a32e&oh=00_AfwqhruoA137HIYppG065--mdBgVG7CuaM3N9B4JVUDeog&oe=69CD9243", */
+};
+
+const { username, tab } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<!-- <ClientRouter /> -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro Basics</title>
+	</head>
+	<body>
+		<Profile profile={data} />
+		
+		<!-- <ProfileTabs username={username} tab={tab}/> -->
+		 
+		<main class="scroll-container">
+			<slot />
+		</main>
+	</body>
+</html>
+
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Righteous&display=swap');
+
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+
+		font-family: "Figtree", sans-serif;
+  		font-optical-sizing: auto;
+  		font-weight: 400;
+  		font-style: normal;
+	}
+</style>

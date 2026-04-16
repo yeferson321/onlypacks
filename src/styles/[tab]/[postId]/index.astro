@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+
+import ProfileLayout from '@/layouts/ProfileLayout.astro';
+
+const { username, tab, postId } = Astro.params;
+
+/* console.log("postId", postId) */
+---
+
+<h1 class="text-red-500">{tab}</h1>
+<img class="h-auto max-w-full rounded-base" src={`https://flowbite.s3.amazonaws.com/docs/gallery/square/${postId}`} alt="">

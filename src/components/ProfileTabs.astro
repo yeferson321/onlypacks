@@ -1,0 +1,72 @@
+---
+import IconSquares2x2 from '@/icons/outline/IconSquares2x2.svg';
+import IconPhoto from '@/icons/outline/IconPhoto.svg';
+import IconVideoCamera from '@/icons/outline/IconVideoCamera.svg';
+import IconSpeakerWave from '@/icons/outline/IconSpeakerWave.svg';
+
+const { username, tab = "" } = Astro.props;
+
+const tabs = [
+	{ name: '', href: `/${username}`, icon: IconSquares2x2 },
+	{ name: 'image', href: `/${username}/image`, icon: IconPhoto },
+	{ name: 'video', href: `/${username}/video`, icon: IconVideoCamera },
+	{ name: 'audio', href: `/${username}/audio`, icon: IconSpeakerWave },
+];
+---
+
+<div class="px-6 mt-6">
+	<nav id="tab-nav" class="relative z-0 w-full max-w-80 mx-auto flex p-1.5 rounded-3xl bg-neutral-100">
+	  	<div class="tab-indicator absolute pointer-events-none top-1.5 bottom-1.5 rounded-3xl bg-neutral-200 transition-all duration-300 ease-in-out" aria-hidden="true"></div>
+	  	{tabs.map(({ name, href, icon: Icon }) => (
+	  	  	<a href={href} class="tab-link group relative z-1 flex-1 flex justify-center py-0.5 transition-colors duration-300 ease-in-out" aria-current={tab === name ? "page" : undefined}>
+	  	  	  	<Icon stroke-width="1.6" width="28" height="28" class={`stroke-neutral-400 group-hover:stroke-neutral-700 group-[&[aria-current=page]]:stroke-neutral-700 transition-colors duration-300 ease-in-out`}/>
+	  	  	</a>
+	  	))}
+	</nav>
+</div>
+
+<script>
+	import { emit } from '@/utils/events';
+
+	const tabsElement = document.getElementById("tab-nav");
+	if (!tabsElement) throw new Error('Element #tab-nav not found');
+
+	const tabIndicatorElement = tabsElement.querySelector<HTMLElement>(".tab-indicator");
+	const tabLinkElements = tabsElement.querySelectorAll<HTMLAnchorElement>(".tab-link");
+	let currentTab = tabsElement.querySelector<HTMLAnchorElement>('[aria-current="page"]');
+
+	const moveTo = (currentTab: HTMLAnchorElement) => {
+		tabIndicatorElement.style.left  = `${currentTab.offsetLeft}px`;
+		tabIndicatorElement.style.width = `${currentTab.offsetWidth}px`;
+	};
+
+ 	moveTo(currentTab);
+
+	tabsElement.addEventListener('mouseleave', () => {
+		moveTo(currentTab);
+	});
+
+	tabsElement.addEventListener('mouseover', (event) => {
+		const link = event.target.closest('a');
+		if (link) moveTo(link);
+	});
+
+	tabLinkElements.forEach((linkElement) => {
+		linkElement.addEventListener("click", (event) => { 
+			event.preventDefault();
+			
+			const pathname = linkElement.pathname;
+			history.pushState({}, "", pathname);
+			
+			const segments = pathname.split("/");
+			const tab = segments[2] ?? "";
+			
+			emit("tabchange",{ tab: tab });
+
+			currentTab?.removeAttribute("aria-current");
+
+			linkElement.setAttribute("aria-current", "page");
+			currentTab = linkElement;
+		})
+	});
+</script>

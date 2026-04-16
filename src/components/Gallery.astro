@@ -1,0 +1,151 @@
+---
+type PostType = "image" | "video" | "audio";
+
+interface Post {
+  postId: string;
+  type: PostType;
+  url: string;
+}
+
+interface Props {
+  username?: string;
+  tab: string;
+  posts: Post[];
+}
+
+const { username, tab, posts } = Astro.props;
+
+const initialVisible = 12;
+---
+
+<div id="gallery">
+    <div id="grid" class="grid grid-cols-2 md:grid-cols-3 gap-2 px-4"></div>
+    <div id="load-more" class="p-4"></div>
+</div>
+
+<script define:vars={{ posts, username, tab, initialVisible }}>
+    let currentTab = tab;
+    let visible = initialVisible;
+    let renderedCount = 0;
+
+    const validTypes = ["image", "video", "audio"];
+
+    const grid = document.getElementById("grid");
+    const loadMore = document.getElementById("load-more");
+
+    function getFilteredPosts() {
+      return validTypes.includes(currentTab)
+        ? posts.filter((p) => p.type === currentTab)
+        : posts;
+    };
+
+    const createMedia = (item) => {
+        if (item.type === "audio") {
+            const img = document.createElement("img");
+            img.src = `https://picsum.photos/seed/${item.postId}/400.jpg`;
+            img.loading = "lazy";
+            img.decoding = "async";
+            img.className = "h-full w-full object-cover rounded-2xl";
+            return img;
+        }
+
+        if (item.type === "image") {
+            const img = document.createElement("img");
+            img.src = item.url;
+            img.loading = "lazy";
+            img.decoding = "async";
+            img.className = "h-full w-full object-cover rounded-2xl";
+            return img;
+        }
+
+        if (item.type === "video") {
+            const video = document.createElement("video");
+            video.className = "h-full w-full object-cover rounded-2xl";
+            video.preload = "metadata";
+            video.muted = true;
+            video.playsInline = true;
+            
+            const source = document.createElement("source");
+            source.src = item.url;
+            source.type = "video/mp4";
+            
+            video.appendChild(source);
+            return video;
+        }
+    }
+
+    const createIcon = (type) => {
+        const container = document.createElement("div");
+        container.className = "absolute inset-0 flex items-center justify-center icon-container";
+
+        let svg = "";
+
+        if (type === "image") {
+            svg = `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="stroke-neutral-700" aria-hidden="true" stroke-width="1.5" width="28" height="28">
+        			  	<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"></path>
+        		</svg>`;
+        }
+
+        if (type === "video") {
+            svg = `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="stroke-neutral-700" aria-hidden="true" stroke-width="1.5" width="28" height="28">
+        		  	<path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"></path>
+        		</svg>`;
+        }
+
+        if (type === "audio") {
+            svg = `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="stroke-neutral-700" aria-hidden="true" stroke-width="1.5" width="28" height="28">
+        		  	<path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"></path>
+        		</svg>`;
+        }
+
+        container.innerHTML = svg;
+        return container;
+    };
+
+    const renderPosts = () => {
+        const filtered = getFilteredPosts();
+        const nextSlice = filtered.slice(renderedCount, visible);
+
+        nextSlice.forEach((item) => {
+            const a = document.createElement("a");
+            a.href = `/${username}/${item.postId}`;
+            a.className = "relative aspect-square overflow-hidden";
+            a.dataset.type = item.type;
+            
+            const media = createMedia(item);
+            const icon = createIcon(item.type);
+            
+            a.appendChild(media);
+            a.appendChild(icon);
+            
+            grid.appendChild(a);
+        });
+
+        renderedCount = visible;
+    };
+
+    // infinite scroll
+    const observer = new IntersectionObserver(
+        (entries) => {
+            if (entries[0].isIntersecting) {
+                visible += initialVisible;
+                renderPosts();
+            }
+        }, { rootMargin: "300px" }
+    );
+    
+    observer.observe(loadMore);
+  
+    // tabs
+window.addEventListener("tabchange", (e) => {
+  currentTab = e.detail.tab;
+  visible = initialVisible;
+  renderedCount = 0;
+
+  grid.innerHTML = "";
+
+  renderPosts();
+});
+    // init
+    renderPosts();
+</script>

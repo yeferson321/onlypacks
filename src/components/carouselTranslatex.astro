@@ -1,0 +1,129 @@
+---
+import type { ImageData } from '@/types/ui';
+
+interface Props {
+	stories: ImageData[]
+};
+
+const { stories } = Astro.props;
+---
+
+<div class="relative w-full h-145 overflow-hidden rounded-b-4xl">
+	<div id="profile-carousel" class="flex h-full" aria-label="Carousel de historias">
+		{stories.map((storie: ImageData, index: number) => (
+
+			<div class="relative w-full h-full shrink-0" data-carousel-item> 
+				<img src={storie.url} width="104" height="580" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "low"} decoding={index === 0 ? "auto" : "async"} crossorigin="anonymous" class="w-full h-full object-cover object-[50%_10%]" alt={`Historia ${index + 1}`}/>
+				<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 20%),	linear-gradient(to top, rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},0.9), transparent 50%)`}></div>
+			</div> 
+			
+		))}
+
+		<div class="relative w-full h-full shrink-0" data-carousel-item> 
+			<img src={stories[0].url} width="104" height="580" loading="lazy" fetchpriority="low" decoding="async" crossorigin="anonymous" class="w-full h-full object-cover object-[50%_10%]" alt={`Historia ${stories.length + 1}`}/>
+			<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 20%), linear-gradient(to top, rgba(${stories[0].avgColor.r},${stories[0].avgColor.g},${stories[0].avgColor.b},0.9), transparent 50%)`}></div>
+		</div> 
+	</div>
+</div>
+
+<script>
+	import { limitExecution } from '@/utils/limitExecution';
+
+	const profileCarousel = document.getElementById("profile-carousel");
+	if (!profileCarousel) throw new Error('Element id="profile-carousel" not found');
+	
+	const carouselItems = profileCarousel.querySelectorAll<HTMLElement>("[data-carousel-item]");
+	const carouselIndicators = document.querySelectorAll<HTMLButtonElement>("[data-carousel-indicator]");
+	
+	const autoScrollTime = 4000;
+	const totalItems = carouselItems.length - 1;
+	let carouselWidth = profileCarousel.parentElement!.offsetWidth;
+	let autoScroll: ReturnType<typeof setInterval> | null = null;
+	let currentIndex = 0;
+	let startX = 0, startY = 0;
+	let isAnimating = false;
+
+	const updateIndicators = () => {
+		const realIndex = currentIndex === totalItems ? 0 : currentIndex;
+	    carouselIndicators.forEach((indicator, index) => indicator.setAttribute("aria-current", index === realIndex ? "true": "false"));
+	};
+	
+	const applyTransform = (newCurrentIndex: number, animate = true) => {
+		if (newCurrentIndex < 0) return;
+		currentIndex = newCurrentIndex;
+
+		isAnimating = true;
+		profileCarousel.classList.toggle("transition-disabled", !animate);
+		profileCarousel.style.transform = `translateX(-${currentIndex * carouselWidth}px)`;
+	
+		updateIndicators();
+	};
+	
+	profileCarousel.addEventListener("transitionend", () => {
+	    if (currentIndex === totalItems) applyTransform(0, false);
+		isAnimating = false;
+	});
+	
+	const stopAutoScroll = () => {
+		if (!autoScroll) return;
+	
+		clearInterval(autoScroll);
+		autoScroll = null;
+	};
+	
+	autoScroll = setInterval(() => {
+	  	applyTransform(++currentIndex);
+	
+	  	if (currentIndex === totalItems) stopAutoScroll();
+	}, autoScrollTime);
+	
+	carouselIndicators.forEach((indicator) => {
+		indicator.addEventListener("click", () => {
+			stopAutoScroll();
+			applyTransform(Number(indicator.dataset.carouselIndicator));
+		});
+	});
+	
+	profileCarousel.addEventListener('touchstart', (event) => {
+		startX = event.touches[0].clientX;
+		startY = event.touches[0].clientY;
+	}, { passive: true });
+
+	profileCarousel.addEventListener('touchend', (event) => {
+		if (isAnimating) return;
+		const deltaX = startX - event.changedTouches[0].clientX;
+		const deltaY = startY - event.changedTouches[0].clientY;
+		const absX = Math.abs(deltaX), absY = Math.abs(deltaY);
+		if (absX < absY || absX < 50) return;
+
+		stopAutoScroll();
+		applyTransform(currentIndex + (deltaX > 0 ? 1 : -1));
+	});
+		
+	profileCarousel.addEventListener("wheel", limitExecution((event: WheelEvent) => {
+		if (isAnimating) return;
+	    const { deltaX, deltaY } = event;
+		const absX = Math.abs(deltaX), absY = Math.abs(deltaY);
+		if (absX < absY || absX < 50) return;
+	
+	    event.preventDefault();
+		stopAutoScroll();
+	    applyTransform(currentIndex + (deltaX > 0 ? 1 : -1));
+	}, 300), { passive: false });
+	
+	window.addEventListener("resize", limitExecution(() => {
+	    carouselWidth = profileCarousel.parentElement!.offsetWidth; 
+	    applyTransform(currentIndex, false);
+	}, 100));
+</script>
+
+<style>
+#profile-carousel {
+	transition: transform var(--transition-duration) var(--transition-timing);
+	will-change: transform;
+}
+
+#profile-carousel.transition-disabled {
+    transition: none;
+}
+</style>
