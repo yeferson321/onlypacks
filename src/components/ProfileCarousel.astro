@@ -97,13 +97,12 @@ const lastCloneStory = stories[0];
 		autoScroll = null;
 	};
 	
-/* 	autoScroll = setInterval(() => {
+	autoScroll = setInterval(() => {
 	  	applyTransform(++currentIndex);
 	
 	  	if (currentIndex === totalItems) stopAutoScroll();
 	}, autoScrollTime);
-	 */
-
+	
 	carouselIndicators.forEach((indicator) => {
 		indicator.addEventListener("click", () => {
 			stopAutoScroll();
@@ -112,7 +111,6 @@ const lastCloneStory = stories[0];
 	});
 
 	prevButtonElement?.addEventListener("click", () => {
-		/* alert("prevButtonElement sharing:"); */
 		if (isAnimating) return;
 		stopAutoScroll();
 		applyTransform(currentIndex - 1);
