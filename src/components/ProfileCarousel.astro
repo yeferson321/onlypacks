@@ -104,11 +104,6 @@ const lastCloneStory = stories[0];
 	}, autoScrollTime);
 	 */
 
-/* 	profileCarousel.addEventListener("focusin", stopAutoScroll);
-
-profileCarousel.addEventListener("focus", stopAutoScroll, true);
- */
-
 	carouselIndicators.forEach((indicator) => {
 		indicator.addEventListener("click", () => {
 			stopAutoScroll();
@@ -117,6 +112,7 @@ profileCarousel.addEventListener("focus", stopAutoScroll, true);
 	});
 
 	prevButtonElement?.addEventListener("click", () => {
+		/* alert("prevButtonElement sharing:"); */
 		if (isAnimating) return;
 		stopAutoScroll();
 		applyTransform(currentIndex - 1);
