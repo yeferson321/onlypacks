@@ -101,7 +101,7 @@ const formatNumber = (number: number) => {
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"  stroke="currentColor" stroke-width="1.8" width="24" height="24" class="stroke-white">
   							<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
 						</svg>
-						<span class="ms-1 text-base font-medium text-white">Enviar regalo</span>
+						<span class="ms-1 text-base font-semibold text-white">Enviar regalo</span>
 					</button>
 				)}
 			
@@ -153,32 +153,25 @@ const formatNumber = (number: number) => {
 </div>
 
 <script>
-const shareButton = document.getElementById("share-button");
+	const shareButtonElement = document.getElementById("share-button");
 
-shareButton?.addEventListener("click", async () => {
-  	if (navigator.share) {
-  	  	try {
-  	  	  	await navigator.share({
-  	  	  	  	title: document.title,
-  	  	  	  	text: "Mira esto",
-  	  	  	  	url: window.location.href,
-  	  	  	});
-  	  	} catch (error) {
-  	  	  	alert("Error sharing:", error);
-  	  	}
-  	} else {
-  	  	navigator.clipboard.writeText(window.location.href);
-  		alert("Link copiado al portapapeles");
-  	}
-});
-
-	const updatePosition = () => {
-/* 	if (autoScroll) clearInterval(autoScroll); */
-/* 	index = Math.max(0, index + delta); */
-/* 	if (currentIndex < 0) currentIndex = 0;
-
-    applyTransform(); */
-};
+	shareButtonElement?.addEventListener("click", async () => {
+	  	if (navigator.share) {
+	  	  	try {
+	  	  	  	await navigator.share({
+	  	  	  	  	title: document.title,
+	  	  	  	  	text: "Mira esto",
+	  	  	  	  	url: window.location.href,
+	  	  	  	});
+	  	  	} catch (error) {
+				if (error.name === "AbortError") return;
+	  	  	  	alert("Error sharing:", error);
+	  	  	}
+	  	} else {
+	  	  	navigator.clipboard.writeText(window.location.href);
+	  		alert("Link copiado al portapapeles");
+	  	}
+	});
 
 
 /* profileCarousel.addEventListener('touchstart', (event) => startX = event.touches[0].clientX, { passive: true });
@@ -222,13 +215,3 @@ window.addEventListener("resize", limitExecution(() => {
  */
 
 </script>
-
-
-<!-- <div class="flex items-center gap-4">
-
-			<div class="w-26 h-26 p-0.5 rounded-full bg-white">
-	  			<img src={data.imgPerfil} width="104" height="104" class="w-full h-full rounded-full object-cover"/>
-			</div>
-
-		</div>
- -->
