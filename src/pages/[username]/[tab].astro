@@ -1,8 +1,8 @@
----
-/* export const prerender = false;
- */
+<!-- ---
+export const prerender = false;
+
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
-/* import { GalleryReact } from 'public/media/GalleryReact'; */
+import { GalleryReact } from '@/components/GalleryReact';
 import Gallery from '@/components/Gallery.astro';
 
 const { username, tab } = Astro.params;
@@ -38,8 +38,25 @@ const posts: Post[] = Array.from({ length: 200 }, (_, i) => {
 ---
 
 <ProfileLayout username={username} tab={tab} >
-<!--     <h1 class="text-red-500">{username}</h1>
- -->
-    <!-- <GalleryReact username={username}, tab={tab}, posts={posts} client:load/> -->
-    <!--  <Gallery username={username} tab={tab} posts={posts} /> -->
-</ProfileLayout>
+    <h1 class="text-red-500">{username}</h1>
+
+    <GalleryReact username={username}, tab={tab}, posts={posts} client:load/>
+     <Gallery username={username} tab={tab} posts={posts} />
+
+
+         <h1 class="text-red-500">{username}</h1> 
+
+    <GalleryReact username={username}, tab={tab}, posts={posts} client:load server:defer>
+        <div slot="fallback" class="grid grid-cols-2 md:grid-cols-3 gap-2 px-4">
+            {Array.from({ length: 12 }).map(() => (
+                <div class="aspect-square bg-red-200 rounded-2xl animate-pulse"></div>
+            ))}
+        </div>
+    </GalleryReact>  
+    
+
+      <h1 class="text-red-500">{username}</h1>
+
+    <GalleryReact username={username}, tab={tab}, posts={posts} client:load/> 
+     <Gallery username={username} tab={tab} posts={posts} /> 
+</ProfileLayout> -->
