@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+/* import { useEffect, useState, useRef } from 'react';
 
 export function ImageMedia({ src }: { src: string }) {
     const [loaded, setLoaded] = useState(false);
@@ -18,4 +18,4 @@ export function ImageMedia({ src }: { src: string }) {
             <img ref={imgRef} src={src} loading="lazy" decoding="async" onLoad={() => setLoaded(true)} onError={() => setLoaded(true)} className="h-full w-full object-cover rounded-2xl" alt=""/>
         </>
     );
-};
+}; */

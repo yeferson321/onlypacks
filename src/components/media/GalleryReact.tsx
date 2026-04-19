@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
+/* import { useEffect, useState, useRef, useMemo } from 'react';
 import { on } from '@/utils/events';
 
 type PostType = "image" | "video" | "audio";
@@ -98,4 +98,4 @@ export function GalleryReact({ username, tab, posts }: Props) {
 
 		</>
 	)
-}
+} */

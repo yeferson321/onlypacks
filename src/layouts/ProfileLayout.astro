@@ -2,6 +2,7 @@
 import '@/styles/global.css';
 import Profile from '@/components/Profile.astro';
 import ProfileTabs from '@/components/ProfileTabs.astro';
+import Toast from '@/components/Toast.astro';
 
 /* import { ClientRouter } from 'astro:transitions'; */
 
@@ -54,11 +55,14 @@ const { username, tab } = Astro.props;
 		
 		<!-- <ProfileTabs username={username} tab={tab}/> -->
 		 
-		<main class="scroll-container">
-			<slot />
-		</main>
-	</body>
-</html>
+
+
+
+			<main class="scroll-container">
+				<slot />
+			</main>
+		</body>
+	</html>
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Righteous&display=swap');

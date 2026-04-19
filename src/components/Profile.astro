@@ -8,6 +8,7 @@ import IconHeart from '@/icons/outline/IconHeart.svg';
 import IconBars3Right from '@/icons/outline/IconBars3Right.svg';
 import IconLink from '@/icons/outline/IconLink.svg';
 import ProfileCarousel from '@/components/ProfileCarousel.astro';
+import Toast from './Toast.astro';
 
 interface Props {
 	profile: Profile;
@@ -113,6 +114,8 @@ const formatNumber = (number: number) => {
 					<IconLink stroke-width="2" width="26" height="26" class="stroke-blue-500"/>
 				</button>
 
+				<Toast/>
+
 			</div>
 
 			{profile.activeSubscription === false && (
@@ -156,7 +159,7 @@ const formatNumber = (number: number) => {
 	const shareButtonElement = document.getElementById("share-button");
 
 	shareButtonElement?.addEventListener("click", async () => {
-	  	if (navigator.share) {
+	  	/* if (navigator.share) {
 	  	  	try {
 	  	  	  	await navigator.share({
 	  	  	  	  	title: document.title,
@@ -169,8 +172,9 @@ const formatNumber = (number: number) => {
 	  	  	}
 	  	} else {
 	  	  	navigator.clipboard.writeText(window.location.href);
-	  		alert("Link copiado al portapapeles");
-	  	}
+	  		window.dispatchEvent(new Event("toastactive"));
+	  	} */
+	  	window.dispatchEvent(new Event("toastactive"));
 	});
 
 

@@ -1,6 +1,9 @@
 type EventMap = {
   tabchange: {
     tab: string
+  },
+  tabchange: {
+    tab: string
   }
 }
 

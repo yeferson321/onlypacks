@@ -1,0 +1,112 @@
+---
+import IconLink from '@/icons/outline/IconLink.svg';
+import IconXmark from '@/icons/outline/IconXmark.svg';
+---
+
+<div id="toast" class="hidden fixed w-full z-40 bottom-8 flex justify-center" role="alert">
+    <div class="flex items-center p-2 rounded-full shadow-lg bg-blue-500" data-toast-wrapper>
+        <IconLink stroke-width="1.8" width="22" height="22" class="stroke-white"/>
+        <div class="mx-2.5 h-4 w-px bg-white"></div>
+        <p class="text-base font-medium text-white">El enlace se copió</p>
+        <button type="button" class="group ms-2.5 relative w-7 h-7 flex items-center justify-center rounded-full" aria-label="Cerrar mensaje" data-toast-close>
+            <svg class="absolute inset-0 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="16" class="stroke-white/60" stroke-width="2" fill="none"/>
+                <circle cx="18" cy="18" r="16" class="progress-ring stroke-white" stroke-width="2" fill="none"/>
+            </svg>
+            <IconXmark stroke-width="1.8" width="18" height="18" class="relative z-10 stroke-white/60 group-hover:stroke-white transition-colors duration-300 ease-in-out"/>
+        </button>
+    </div>
+</div>
+
+<style>
+[data-toast-wrapper] {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 300ms ease, transform 300ms ease;
+}
+
+[data-toast-wrapper].animation {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.progress-ring {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: progress 6000ms linear forwards;
+}
+
+[data-toast-wrapper]:hover .progress-ring {
+    animation: progress-restart 6000ms linear forwards;
+    animation-play-state: paused;
+}
+
+@keyframes progress {
+    from {
+        stroke-dashoffset: 100;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* misma animación, distinto nombre */
+@keyframes progress-restart {
+    from {
+        stroke-dashoffset: 100;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+</style>
+
+<script>
+    const toast = document.getElementById("toast");
+    if (!toast) throw new Error('Element id="toast" not found');
+
+    const toastWrapperElement = toast.querySelector<HTMLDivElement>("[data-toast-wrapper]");
+    const closeButtonElement = toast.querySelector<HTMLButtonElement>("[data-toast-close]");
+
+    if (!toastWrapperElement || !closeButtonElement) throw new Error("Toast elements not found");
+
+    let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const stopAutoScroll = () => {
+		if (!autoCloseTimer) return;
+		clearTimeout(autoCloseTimer);
+		autoCloseTimer = null;
+	};
+
+    const showToast = () => {
+        toast.classList.remove("hidden");
+
+        toast.getBoundingClientRect();
+        
+        toastWrapperElement.classList.add("animation");
+
+        // limpiar timer previo
+        stopAutoScroll();
+
+        // iniciar nuevo timer
+        autoCloseTimer = setTimeout(() => {
+            hideToast();
+        }, 6000);
+    };
+
+    const hideToast = () => {
+        stopAutoScroll();
+
+        const onEnd = () => {
+            toast.classList.add("hidden");
+            toastWrapperElement.removeEventListener("transitionend", onEnd);
+        };
+
+        toastWrapperElement.addEventListener("transitionend", onEnd);
+        toastWrapperElement.classList.remove("animation");
+    };
+
+    closeButtonElement.addEventListener("click", () => hideToast());
+
+    window.addEventListener("toastactive", (e) => showToast());
+</script>

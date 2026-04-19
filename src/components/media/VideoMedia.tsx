@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+/* import { useEffect, useState, useRef } from 'react';
 
 export function VideoMedia({ src }: { src: string }) {
     const [loaded, setLoaded] = useState(false);
@@ -20,4 +20,4 @@ export function VideoMedia({ src }: { src: string }) {
             </video>
         </>
     );
-};
+}; */
