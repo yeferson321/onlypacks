@@ -1,11 +1,18 @@
 ---
 import IconLink from '@/icons/outline/IconLink.svg';
 import IconXmark from '@/icons/outline/IconXmark.svg';
+
+const autoCloseTime = 6000
+const verticalPosition = "bottom";
+const horizontalPosition = "center";
+
+const verticalClasses = { top: 'top-8', center: 'top-1/2 -translate-y-1/2', bottom: 'bottom-8' };
+const horizontalClasses = { left: 'left-8', center: 'left-1/2 -translate-x-1/2', right: 'right-8' };
 ---
 
-<div id="toast" class="hidden fixed w-full z-40 bottom-8 flex justify-center" role="alert">
-    <div class="flex items-center p-2 rounded-full shadow-lg bg-blue-500" data-toast-wrapper>
-        <IconLink stroke-width="1.8" width="22" height="22" class="stroke-white"/>
+<div id="toast" class={`hidden fixed z-50 w-max ${verticalClasses[verticalPosition]} ${horizontalClasses[horizontalPosition]}`} role="alert" data-autoclose-time={autoCloseTime}>
+    <div class="flex items-center p-2.5 rounded-full shadow-lg bg-blue-500" data-toast-wrapper>
+        <IconLink stroke-width="1.8" width="24" height="24" class="stroke-white"/>
         <div class="mx-2.5 h-4 w-px bg-white"></div>
         <p class="text-base font-medium text-white">El enlace se copió</p>
         <button type="button" class="group ms-2.5 relative w-7 h-7 flex items-center justify-center rounded-full" aria-label="Cerrar mensaje" data-toast-close>
@@ -71,12 +78,30 @@ import IconXmark from '@/icons/outline/IconXmark.svg';
     if (!toastWrapperElement || !closeButtonElement) throw new Error("Toast elements not found");
 
     let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
+    const autoCloseTime = Number(toast.dataset.autocloseTime) || 6000;
 
     const stopAutoScroll = () => {
 		if (!autoCloseTimer) return;
 		clearTimeout(autoCloseTimer);
 		autoCloseTimer = null;
 	};
+
+    const startAutoScroll = () => {
+        console.log("autoCloseTimer", autoCloseTimer)
+        autoCloseTimer = setTimeout(() => hideToast(), autoCloseTime);
+    };
+
+    const addEvents = () => {
+    	toastWrapperElement.addEventListener("mouseenter", stopAutoScroll);
+    	toastWrapperElement.addEventListener("mouseleave", startAutoScroll);
+    	closeButtonElement.addEventListener("click", hideToast);
+    };
+
+    const removeEvents = () => {
+    	toastWrapperElement.removeEventListener("mouseenter", stopAutoScroll);
+    	toastWrapperElement.removeEventListener("mouseleave", startAutoScroll);
+    	closeButtonElement.removeEventListener("click", hideToast);
+    };
 
     const showToast = () => {
         toast.classList.remove("hidden");
@@ -85,28 +110,28 @@ import IconXmark from '@/icons/outline/IconXmark.svg';
         
         toastWrapperElement.classList.add("animation");
 
-        // limpiar timer previo
-        stopAutoScroll();
+        addEvents();
 
         // iniciar nuevo timer
-        autoCloseTimer = setTimeout(() => {
-            hideToast();
-        }, 6000);
+        startAutoScroll();
     };
 
     const hideToast = () => {
+        toastWrapperElement.classList.remove("animation");
+    
+        toastWrapperElement.addEventListener("transitionend",  () => toast.classList.add("hidden"), { once: true });
+
+        removeEvents();
+
         stopAutoScroll();
 
-        const onEnd = () => {
-            toast.classList.add("hidden");
-            toastWrapperElement.removeEventListener("transitionend", onEnd);
-        };
-
-        toastWrapperElement.addEventListener("transitionend", onEnd);
-        toastWrapperElement.classList.remove("animation");
+        console.log("hideToast", autoCloseTimer)
     };
 
-    closeButtonElement.addEventListener("click", () => hideToast());
-
-    window.addEventListener("toastactive", (e) => showToast());
+    window.addEventListener("toastactive", (e) => {
+        /* console.log("autoCloseTimer", autoCloseTimer === null) */
+        if (autoCloseTimer) return;
+       /*  console.log("hola") */
+        showToast();
+    });
 </script>
