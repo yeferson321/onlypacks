@@ -20,6 +20,8 @@
     background: rgba(0, 0, 0, 0.3);
 } */
 
+
+
 :root {
     --transition-duration: 300ms;
     --transition-timing: ease-in-out;
@@ -65,3 +67,4 @@ button {
   	font-weight: 400;
   	font-style: normal;
 }
+

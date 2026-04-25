@@ -149,3 +149,47 @@ window.addEventListener("tabchange", (e) => {
     // init
     renderPosts();
 </script>
+
+
+
+
+<!-- profileCarousel.addEventListener('touchstart', (event) => startX = event.touches[0].clientX, { passive: true });
+
+	import { getAverageColor } from '@/utils/getAverageColor';
+	
+		carouselItems.forEach(async (carouselItem) => {
+		const img = carouselItem.firstElementChild as HTMLImageElement;
+		const overlay = carouselItem.lastElementChild as HTMLDivElement;
+	
+		await img.decode();
+	    const { r, g, b } = getAverageColor(img);
+	
+	  	overlay.style.background = `
+	  	    linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 20%),
+	  	    linear-gradient(to top, rgba(${r},${g},${b},0.9), transparent 50%)
+	  	`;
+	});
+	
+profileCarousel.addEventListener('touchend', (event) => {
+  	const delta = startX - event.changedTouches[0].clientX;
+  	if (Math.abs(delta) < 50) return;
+	currentIndex += delta > 0 ? 1 : -1;
+  	updatePosition();
+});
+
+profileCarousel.addEventListener("wheel", limitExecution((event: WheelEvent) => {
+    const { deltaX, deltaY } = event;
+  	if (Math.abs(deltaX) < Math.abs(deltaY) || Math.abs(deltaX) < 50) return;
+
+    event.preventDefault();
+	currentIndex += deltaX > 0 ? 1 : -1;
+    updatePosition();
+}, 300), { passive: false });
+
+window.addEventListener("resize", limitExecution(() => {
+    carouselWidth = profileCarousel.parentElement.offsetWidth; 
+     applyTransform(false);
+}, 100));
+
+
+ -->

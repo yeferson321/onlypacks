@@ -1,0 +1,120 @@
+---
+interface Props {
+    modalId: string;
+    offset?: number;
+    verticalPosition?: 'top' | 'center' | 'bottom';
+};
+
+const { modalId, offset = 1, verticalPosition = 'center' } = Astro.props;
+---
+           
+<div id={modalId} class={`modal`} style={`--offset: ${offset}rem;`} data-modal-id={modalId} role="dialog" aria-modal="true" aria-hidden="false">
+    
+    <div class="modal-overlay"></div>
+
+    <div class={`modal-wrapper vertical-position-${verticalPosition}`}>
+            
+        <slot/>
+
+    </div>
+
+</div>
+
+<style is:global>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 50;
+    inset: 0px;
+    overflow-y: auto;
+}
+
+.modal.visible {
+    display: block;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0px;
+    opacity: 0;
+    background-color: rgb(0 0 0 / 15%);
+    backdrop-filter: blur(1px);
+    transition: opacity var(--transition-duration) var(--transition-timing);
+}
+
+.modal-overlay.animation {
+    opacity: 1;
+}
+
+.modal-wrapper {
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: var(--align-items);
+    padding: var(--offset);
+    min-height: 100%;
+}
+
+.vertical-position-top { --align-items: flex-start; }
+.vertical-position-center { --align-items: center; }
+.vertical-position-bottom { --align-items: flex-end; }
+
+.modal-wrapper > * {
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(10px) scale(75%);
+    transition: 
+        opacity var(--transition-duration) var(--transition-timing), 
+        transform var(--transition-duration) var(--transition-timing);
+}
+
+.modal-wrapper > *.animation {
+    opacity: 1;
+    transform: translateY(0) scale(100%);
+}
+</style>
+
+<script>
+    document.querySelectorAll<HTMLDivElement>(".modal").forEach((modalElement) => {
+        const modalId = modalElement.dataset.modalId;
+        if (!modalId) throw new Error('Missing "data-modal-id" attribute on Modal component');
+
+        const modalOverlayElement = modalElement.querySelector<HTMLDivElement>(".modal-overlay");
+        const modalWrapperElement = modalElement.querySelector<HTMLDivElement>(".modal-wrapper");
+
+        if (!modalOverlayElement || !modalWrapperElement) throw new Error(`Modal "${modalId}": component internal element(s) .modal-overlay and .modal-container not found.`);
+
+        const modalContentElement = modalWrapperElement.firstElementChild as HTMLDivElement;
+        if (!modalContentElement) return console.warn(`Modal "${modalId}" component requires content to be passed into it.`);
+
+        const closeButtonElement = modalElement.querySelector<HTMLButtonElement>("[data-modal-close]");
+        const openButtonElement = document.querySelector<HTMLButtonElement>(`[data-modal-open="${modalId}"]`);
+
+        const setAccessibility = (hidden: boolean) => modalElement.setAttribute('aria-hidden', String(hidden));
+
+        const showModal = () => {
+            if (modalElement.classList.contains("visible")) return; 
+            modalElement.classList.add("visible");
+            setAccessibility(false);
+            requestAnimationFrame(() => {
+                modalContentElement.classList.add("animation");
+                modalOverlayElement.classList.add("animation");
+            });
+        };
+
+        const hideModal = () => {
+            modalContentElement.classList.remove("animation");
+            modalOverlayElement.classList.remove("animation"); 
+            modalContentElement.addEventListener("transitionend", () => {
+                modalElement.classList.remove("visible")
+                setAccessibility(true);
+            }, { once: true }); 
+        };
+
+        modalOverlayElement.addEventListener("click", hideModal);
+        openButtonElement?.addEventListener("click", showModal);
+        closeButtonElement?.addEventListener("click", hideModal);
+        window.addEventListener(`modal:show:${modalId}`, showModal);
+        window.addEventListener(`modal:hide:${modalId}`, hideModal);
+    });
+</script>

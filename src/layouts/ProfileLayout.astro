@@ -2,12 +2,12 @@
 import '@/styles/global.css';
 import Profile from '@/components/Profile.astro';
 import ProfileTabs from '@/components/ProfileTabs.astro';
-import Toast from '@/components/Toast.astro';
+
 
 /* import { ClientRouter } from 'astro:transitions'; */
 
 const data = {
-	activeSubscription: true,
+	activeSubscription: false,
 	name: "Sofia Palmer",
 	username: "Sofiapalmer",
 	isVerified: true,
@@ -55,9 +55,6 @@ const { username, tab } = Astro.props;
 		
 		<!-- <ProfileTabs username={username} tab={tab}/> -->
 		 
-
-
-
 			<main class="scroll-container">
 				<slot />
 			</main>

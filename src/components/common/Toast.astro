@@ -1,0 +1,95 @@
+---
+interface Props {
+    toastId: string;
+    autoCloseTime: number;
+    offset: number;
+    verticalPosition: 'top' | 'center' | 'bottom';
+    horizontalPosition: 'left' | 'center' | 'right';
+};
+
+const { toastId, autoCloseTime, offset, verticalPosition, horizontalPosition } = Astro.props;
+---
+
+<div id={toastId} class={`toast hidden vertical-position-${verticalPosition} horizontal-position-${horizontalPosition}`} style={`--offset: ${offset}rem;`} data-toast-id={toastId} data-autoclose-time={autoCloseTime} role="alert">
+    <slot/>
+</div>
+
+<style is:global>
+.toast.hidden {
+    display: none;
+}
+
+.toast {
+    position: fixed;
+    z-index: 40;
+    width: max-content;
+} 
+
+.vertical-position-top { top: var(--offset); --translateY: -10px; }
+.vertical-position-center { top: 50%; --translateY: 0; }
+.vertical-position-bottom { bottom: var(--offset); --translateY: 10px; }
+
+.horizontal-position-left { left: var(--offset); }
+.horizontal-position-center { left: 50%; transform: translateX(-50%); }
+.horizontal-position-right { right: var(--offset); }
+
+.toast > * {
+    opacity: 0;
+    transform: translateY(var(--translateY)) scale(75%);
+    transition: opacity var(--transition-duration) var(--transition-timing), transform var(--transition-duration) var(--transition-timing);
+}
+
+.toast > *.animation {
+    opacity: 1;
+    transform: translateY(0) scale(100%);
+}
+</style>
+
+<script>
+    document.querySelectorAll<HTMLDivElement>(".toast").forEach((toastElement) => {
+        const toastId = toastElement.dataset.toastId;
+        const autoCloseTime = Number(toastElement.dataset.autocloseTime) || 4000;
+
+        if (!toastId) throw new Error('Missing "data-toast-id" attribute on Toast component');
+        
+        const toastWrapperElement = toastElement.firstElementChild as HTMLDivElement;
+
+        if (!toastWrapperElement) {
+            console.warn(`Toast "${toastId}" component requires content to be passed into it.`);
+            return;
+        }
+
+        const closeButtonElement = toastElement.querySelector<HTMLButtonElement>("[data-toast-close]");
+        const openButtonElement = document.querySelector<HTMLButtonElement>(`[data-toast-open="${toastId}"]`);
+
+        let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
+
+        const startAutoClose = () => autoCloseTimer = setTimeout(() => hideToast(), autoCloseTime);
+        
+        const stopAutoClose = () => {
+	    	if (!autoCloseTimer) return;
+	    	clearTimeout(autoCloseTimer);
+	    	autoCloseTimer = null;
+	    };
+
+        const showToast = () => {
+            if (!toastElement.classList.contains("hidden")) return; 
+            toastElement.classList.remove("hidden"); 
+            requestAnimationFrame(() => toastWrapperElement.classList.add("animation"));
+            startAutoClose();
+        };
+
+        const hideToast = () => {
+            toastWrapperElement.classList.remove("animation"); 
+            toastWrapperElement.addEventListener("transitionend", () => toastElement.classList.add("hidden"), { once: true }); 
+            stopAutoClose();
+        };
+
+        toastWrapperElement.addEventListener("mouseenter", stopAutoClose);
+        toastWrapperElement.addEventListener("mouseleave", startAutoClose);
+        openButtonElement?.addEventListener("click", showToast);
+        closeButtonElement?.addEventListener("click", hideToast);
+        window.addEventListener(`toast:show:${toastId}`, showToast);
+        window.addEventListener(`toast:hide:${toastId}`, hideToast);
+    });
+</script>
