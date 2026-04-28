@@ -1,35 +1,33 @@
 ---
 interface Props {
     modalId: string;
-    offset?: number;
+    offset?: string;
     verticalPosition?: 'top' | 'center' | 'bottom';
+    unmount?: boolean;
 };
 
-const { modalId, offset = 1, verticalPosition = 'center' } = Astro.props;
+const { modalId, offset = '2rem', verticalPosition = 'center', unmount = false } = Astro.props;
 ---
            
-<div id={modalId} class={`modal`} style={`--offset: ${offset}rem;`} data-modal-id={modalId} role="dialog" aria-modal="true" aria-hidden="false">
-    
+<div id={`modal-${modalId}`} class="modal" style={`--offset: ${offset};`} data-modal-id={modalId} data-state="closed" data-vertical={verticalPosition} data-unmount={unmount} role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-overlay"></div>
-
-    <div class={`modal-wrapper vertical-position-${verticalPosition}`}>
-            
-        <slot/>
-
+    <div class="modal-viewport focus:outline-none">
+        <div class="modal-positioner">
+            <div class="modal-content">
+                <slot/>
+            </div>
+        </div>
     </div>
-
 </div>
 
-<style is:global>
+<style>
 .modal {
     display: none;
-    position: fixed;
+    position: relative;
     z-index: 50;
-    inset: 0px;
-    overflow-y: auto;
 }
 
-.modal.visible {
+.modal:not([data-state="closed"]) {
     display: block;
 }
 
@@ -39,15 +37,23 @@ const { modalId, offset = 1, verticalPosition = 'center' } = Astro.props;
     opacity: 0;
     background-color: rgb(0 0 0 / 15%);
     backdrop-filter: blur(1px);
-    transition: opacity var(--transition-duration) var(--transition-timing);
+    transition: opacity var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
 }
 
-.modal-overlay.animation {
+.modal[data-state="open"] > .modal-overlay  {
     opacity: 1;
 }
 
-.modal-wrapper {
+.modal-viewport {
+    position: fixed;
+    inset: 0px;
+    z-index: 50;
+    width: 100vw;
+    overflow-y: auto;
     pointer-events: none;
+}
+
+.modal-positioner {
     display: flex;
     justify-content: center;
     align-items: var(--align-items);
@@ -55,59 +61,69 @@ const { modalId, offset = 1, verticalPosition = 'center' } = Astro.props;
     min-height: 100%;
 }
 
-.vertical-position-top { --align-items: flex-start; }
-.vertical-position-center { --align-items: center; }
-.vertical-position-bottom { --align-items: flex-end; }
+.modal[data-vertical="top"] .modal-positioner { --align-items: flex-start; }
+.modal[data-vertical="center"] .modal-positioner { --align-items: center; }
+.modal[data-vertical="bottom"] .modal-positioner { --align-items: flex-end; }
 
-.modal-wrapper > * {
+.modal-content {
+/*  position: relative;
+    ooverflow: hidden; */
     pointer-events: auto;
     opacity: 0;
     transform: translateY(10px) scale(75%);
     transition: 
-        opacity var(--transition-duration) var(--transition-timing), 
-        transform var(--transition-duration) var(--transition-timing);
+        opacity var(--transition-duration, 300ms) var(--transition-timing, ease-in-out), 
+        transform var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
 }
 
-.modal-wrapper > *.animation {
+.modal[data-state="open"] .modal-content {
     opacity: 1;
     transform: translateY(0) scale(100%);
 }
 </style>
 
 <script>
+    const mountModal = (modalElement: HTMLElement) => document.body.appendChild(modalElement);
+    const unmountModal = (modalElement: HTMLElement) => modalElement.remove();
+
     document.querySelectorAll<HTMLDivElement>(".modal").forEach((modalElement) => {
-        const modalId = modalElement.dataset.modalId;
+        const { modalId, unmount } = modalElement.dataset
         if (!modalId) throw new Error('Missing "data-modal-id" attribute on Modal component');
 
+        unmount === "true" ? unmountModal(modalElement) : mountModal(modalElement);
+
         const modalOverlayElement = modalElement.querySelector<HTMLDivElement>(".modal-overlay");
-        const modalWrapperElement = modalElement.querySelector<HTMLDivElement>(".modal-wrapper");
+        if (!modalOverlayElement) throw new Error(`Modal "${modalId}": component internal element(s) .modal-overlay not found.`);
 
-        if (!modalOverlayElement || !modalWrapperElement) throw new Error(`Modal "${modalId}": component internal element(s) .modal-overlay and .modal-container not found.`);
-
-        const modalContentElement = modalWrapperElement.firstElementChild as HTMLDivElement;
-        if (!modalContentElement) return console.warn(`Modal "${modalId}" component requires content to be passed into it.`);
-
-        const closeButtonElement = modalElement.querySelector<HTMLButtonElement>("[data-modal-close]");
         const openButtonElement = document.querySelector<HTMLButtonElement>(`[data-modal-open="${modalId}"]`);
+        const closeButtonElement = modalElement.querySelector<HTMLButtonElement>("[data-modal-close]");
+        let lastFocusedElement: HTMLElement | null = null;
 
-        const setAccessibility = (hidden: boolean) => modalElement.setAttribute('aria-hidden', String(hidden));
+        const setAccessibility = (hidden: boolean) => modalElement.setAttribute("aria-hidden", String(hidden));
+
+        const handleKeydown = (event: KeyboardEvent) => event.key === "Escape" && hideModal();
 
         const showModal = () => {
-            if (modalElement.classList.contains("visible")) return; 
-            modalElement.classList.add("visible");
+            if (modalElement.dataset.state !== "closed") return;
+            if (unmount === "true") mountModal(modalElement);
+            modalElement.dataset.state = "opening";
+            lastFocusedElement = document.activeElement as HTMLElement;
             setAccessibility(false);
             requestAnimationFrame(() => {
-                modalContentElement.classList.add("animation");
-                modalOverlayElement.classList.add("animation");
+                modalElement.dataset.state = "open";
+                window.addEventListener("keydown", handleKeydown); 
             });
         };
 
         const hideModal = () => {
-            modalContentElement.classList.remove("animation");
-            modalOverlayElement.classList.remove("animation"); 
-            modalContentElement.addEventListener("transitionend", () => {
-                modalElement.classList.remove("visible")
-                setAccessibility(true);
+            if (modalElement.dataset.state !== "open") return;
+            window.removeEventListener("keydown", handleKeydown);
+            lastFocusedElement?.focus();
+            setAccessibility(true);
+            modalElement.dataset.state = "closing";
+            modalOverlayElement.addEventListener("transitionend", () => {
+                modalElement.dataset.state = "closed"
+                if (unmount === "true") unmountModal(modalElement);
             }, { once: true }); 
         };
 

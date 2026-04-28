@@ -1,0 +1,123 @@
+---
+interface Props {
+    sidebarId: string;
+    offset?: string;
+    horizontalPosition?: 'left' | 'right';
+    unmount?: boolean;
+};
+
+const { sidebarId, offset = '3rem', horizontalPosition = 'right', unmount = false } = Astro.props;
+---
+           
+<div id={`sidebar-${sidebarId}`} class="sidebar" style={`--offset: ${offset};`} data-sidebar-id={sidebarId} data-state="closed" data-horizontal={horizontalPosition} data-unmount={unmount}>
+    <div class="sidebar-overlay"></div>
+    <div class="pointer-events-none fixed inset-0 overflow-hidden">
+        <div class="pointer-events-none absolute inset-0 overflow-hidden">
+            <div class="pointer-events-none fixed inset-y-0 flex max-w-full sidebar-panel">
+                <div class="pointer-events-auto w-screen max-w-76">
+                    <div class="sidebar-content flex h-full flex-col overflow-y-auto bg-white shadow-xl">
+                       hola
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.sidebar {
+    display: none;
+    position: relative;
+    z-index: 40;
+}
+
+.sidebar:not([data-state="closed"]) {
+    display: block;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0px;
+    opacity: 0;
+    background-color: rgb(0 0 0 / 15%);
+    backdrop-filter: blur(1px);
+    transition: opacity var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
+}
+
+.sidebar[data-state="open"] > .sidebar-overlay  {
+    opacity: 1;
+}
+
+.sidebar[data-horizontal="right"] .sidebar-panel { right: 0; padding-left: var(--offset); }
+.sidebar[data-horizontal="left"] .sidebar-panel { left: 0; padding-right: var(--offset); }
+
+.sidebar[data-horizontal="left"] .sidebar-content { --translateX: -100%; }
+.sidebar[data-horizontal="right"] .sidebar-content { --translateX: 100%; }
+
+.sidebar-content {
+    opacity: 0;
+    transform: translateX(var(--translateX));
+    transition: 
+        opacity var(--transition-duration, 300ms) var(--transition-timing, ease-in-out), 
+        transform var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
+}
+
+.sidebar[data-state="open"] .sidebar-content {
+    opacity: 1;
+    transform: translateX(0);
+}
+</style>
+
+<script>
+    const mountSidebar = (sidebarElement: HTMLElement) => document.body.appendChild(sidebarElement);
+    const unmountSidebar = (sidebarElement: HTMLElement) => sidebarElement.remove();
+
+    document.querySelectorAll<HTMLDivElement>(".sidebar").forEach((sidebarElement) => {
+        const { sidebarId, unmount } = sidebarElement.dataset; 
+        if (!sidebarId) throw new Error('Missing "data-sidebar-id" attribute on Sidebar component');
+
+        unmount === "true" ? unmountSidebar(sidebarElement) : mountSidebar(sidebarElement);
+
+        const sidebarOverlayElement = sidebarElement.querySelector<HTMLDivElement>(".sidebar-overlay");
+        if (!sidebarOverlayElement) throw new Error(`Sidebar "${sidebarId}": component internal element(s) .sidebar-overlay not found.`);
+
+        const openButtonElement = document.querySelector<HTMLButtonElement>(`[data-sidebar-open="${sidebarId}"]`);
+        const closeButtonElement = sidebarElement.querySelector<HTMLButtonElement>("[data-sidebar-close]");
+
+        const handleKeydown = (event: KeyboardEvent) => event.key === "Escape" && hideSidebar();
+
+        const showSidebar = () => {
+            if (sidebarElement.dataset.state !== "closed") return;
+            if (unmount === "true") mountSidebar(sidebarElement);
+
+            sidebarElement.dataset.state = "opening";
+
+            console.log("hola show sidebar")
+            
+            requestAnimationFrame(() => {
+                sidebarElement.dataset.state = "open";
+                window.addEventListener("keydown", handleKeydown); 
+            });
+        };
+
+        const hideSidebar = () => {
+            if (sidebarElement.dataset.state !== "open") return;
+            window.removeEventListener("keydown", handleKeydown);
+
+            console.log("hola hide sidebar")
+            
+            sidebarElement.dataset.state = "closing";
+
+            sidebarOverlayElement.addEventListener("transitionend", () => {
+                sidebarElement.dataset.state = "closed";
+                if (unmount === "true") unmountSidebar(sidebarElement);
+            }, { once: true });
+        };
+
+        sidebarOverlayElement.addEventListener("click", hideSidebar);
+        openButtonElement?.addEventListener("click", showSidebar);
+        closeButtonElement?.addEventListener("click", hideSidebar);
+        window.addEventListener(`sidebar:show:${sidebarId}`, showSidebar);
+        window.addEventListener(`sidebar:hide:${sidebarId}`, hideSidebar);
+    });
+</script>

@@ -1,92 +1,103 @@
 ---
 interface Props {
     toastId: string;
-    autoCloseTime: number;
-    offset: number;
-    verticalPosition: 'top' | 'center' | 'bottom';
-    horizontalPosition: 'left' | 'center' | 'right';
+    offset?: string;
+    autocloseTime?: number;
+    verticalPosition?: 'top' | 'center' | 'bottom';
+    horizontalPosition?: 'left' | 'center' | 'right';
+    unmount?: boolean;
 };
 
-const { toastId, autoCloseTime, offset, verticalPosition, horizontalPosition } = Astro.props;
+const { toastId, offset = '3rem', autocloseTime = 4000, verticalPosition = 'bottom', horizontalPosition = 'center', unmount = false } = Astro.props;
 ---
 
-<div id={toastId} class={`toast hidden vertical-position-${verticalPosition} horizontal-position-${horizontalPosition}`} style={`--offset: ${offset}rem;`} data-toast-id={toastId} data-autoclose-time={autoCloseTime} role="alert">
-    <slot/>
+<div id={`toast-${toastId}`}  class="toast" style={`--offset: ${offset};`} data-toast-id={toastId} data-state="closed" data-autoclose-time={autocloseTime} data-vertical={verticalPosition} data-horizontal={horizontalPosition} data-unmount={unmount} role="alert">
+    <div class="toast-content">
+        <slot/>
+    </div>
 </div>
 
-<style is:global>
-.toast.hidden {
-    display: none;
-}
-
+<style>
 .toast {
+    display: none;
     position: fixed;
-    z-index: 40;
+    z-index: 30;
     width: max-content;
 } 
 
-.vertical-position-top { top: var(--offset); --translateY: -10px; }
-.vertical-position-center { top: 50%; --translateY: 0; }
-.vertical-position-bottom { bottom: var(--offset); --translateY: 10px; }
-
-.horizontal-position-left { left: var(--offset); }
-.horizontal-position-center { left: 50%; transform: translateX(-50%); }
-.horizontal-position-right { right: var(--offset); }
-
-.toast > * {
-    opacity: 0;
-    transform: translateY(var(--translateY)) scale(75%);
-    transition: opacity var(--transition-duration) var(--transition-timing), transform var(--transition-duration) var(--transition-timing);
+.toast:not([data-state="closed"]) {
+    display: block;
 }
 
-.toast > *.animation {
+.toast[data-vertical="top"] { top: var(--offset); --translateY: -10px; }
+.toast[data-vertical="center"] { top: 50%; --translateY: 0; }
+.toast[data-vertical="bottom"] { bottom: var(--offset); --translateY: 10px; }
+
+.toast[data-horizontal="left"] { left: var(--offset); }
+.toast[data-horizontal="center"] { left: 50%; transform: translateX(-50%); }
+.toast[data-horizontal="right"] { right: var(--offset); }
+
+.toast-content {
+    opacity: 0;
+    transform: translateY(var(--translateY)) scale(75%);
+    transition: 
+        opacity var(--transition-duration, 300ms) var(--transition-timing, ease-in-out), 
+        transform var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
+}
+
+.toast[data-state="open"] > .toast-content {
     opacity: 1;
     transform: translateY(0) scale(100%);
 }
 </style>
 
 <script>
+    const mountToast = (toastElement: HTMLElement) => document.body.appendChild(toastElement);
+    const unmountToast = (toastElement: HTMLElement) => toastElement.remove();
+
     document.querySelectorAll<HTMLDivElement>(".toast").forEach((toastElement) => {
-        const toastId = toastElement.dataset.toastId;
-        const autoCloseTime = Number(toastElement.dataset.autocloseTime) || 4000;
-
+        const { toastId, autocloseTime, unmount } = toastElement.dataset;
         if (!toastId) throw new Error('Missing "data-toast-id" attribute on Toast component');
+
+        unmount === "true" ? unmountToast(toastElement) : mountToast(toastElement);
         
-        const toastWrapperElement = toastElement.firstElementChild as HTMLDivElement;
+        const toastContentElement = toastElement.querySelector<HTMLDivElement>(".toast-content");
+        if (!toastContentElement) throw new Error(`Toast "${toastId}": component internal element(s) .toast-content not found.`);
 
-        if (!toastWrapperElement) {
-            console.warn(`Toast "${toastId}" component requires content to be passed into it.`);
-            return;
-        }
-
-        const closeButtonElement = toastElement.querySelector<HTMLButtonElement>("[data-toast-close]");
         const openButtonElement = document.querySelector<HTMLButtonElement>(`[data-toast-open="${toastId}"]`);
+        const closeButtonElement = toastElement.querySelector<HTMLButtonElement>("[data-toast-close]");
+        let autoCloseTimerId: ReturnType<typeof setTimeout> | null = null;
 
-        let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
-
-        const startAutoClose = () => autoCloseTimer = setTimeout(() => hideToast(), autoCloseTime);
+        const startAutoClose = () => autoCloseTimerId = setTimeout(() => hideToast(), Number(autocloseTime) || 4000);
         
         const stopAutoClose = () => {
-	    	if (!autoCloseTimer) return;
-	    	clearTimeout(autoCloseTimer);
-	    	autoCloseTimer = null;
+	    	if (!autoCloseTimerId) return;
+	    	clearTimeout(autoCloseTimerId);
+	    	autoCloseTimerId = null;
 	    };
 
         const showToast = () => {
-            if (!toastElement.classList.contains("hidden")) return; 
-            toastElement.classList.remove("hidden"); 
-            requestAnimationFrame(() => toastWrapperElement.classList.add("animation"));
-            startAutoClose();
+            if (toastElement.dataset.state !== "closed") return;
+            if (unmount === "true") mountToast(toastElement);
+            toastElement.dataset.state = "opening";
+            requestAnimationFrame(() => {
+                toastElement.dataset.state = "open";
+                startAutoClose();
+            });
         };
 
         const hideToast = () => {
-            toastWrapperElement.classList.remove("animation"); 
-            toastWrapperElement.addEventListener("transitionend", () => toastElement.classList.add("hidden"), { once: true }); 
+            if (toastElement.dataset.state !== "open") return;
             stopAutoClose();
+            toastElement.dataset.state = "closing";
+            toastContentElement.addEventListener("transitionend", () => {
+                toastElement.dataset.state = "closed";
+                if (unmount === "true") unmountToast(toastElement);
+            }, { once: true });
         };
 
-        toastWrapperElement.addEventListener("mouseenter", stopAutoClose);
-        toastWrapperElement.addEventListener("mouseleave", startAutoClose);
+        toastContentElement.addEventListener("mouseenter", stopAutoClose);
+        toastContentElement.addEventListener("mouseleave", () => toastElement.dataset.state === "open" && startAutoClose());
         openButtonElement?.addEventListener("click", showToast);
         closeButtonElement?.addEventListener("click", hideToast);
         window.addEventListener(`toast:show:${toastId}`, showToast);
