@@ -1,6 +1,7 @@
 ---
 interface Props {
     toastId: string;
+    className?: string;
     offset?: string;
     autocloseTime?: number;
     verticalPosition?: 'top' | 'center' | 'bottom';
@@ -8,10 +9,10 @@ interface Props {
     unmount?: boolean;
 };
 
-const { toastId, offset = '3rem', autocloseTime = 4000, verticalPosition = 'bottom', horizontalPosition = 'center', unmount = false } = Astro.props;
+const { toastId, className, offset, autocloseTime = 4000, verticalPosition = 'bottom', horizontalPosition = 'center', unmount = false } = Astro.props;
 ---
 
-<div id={`toast-${toastId}`}  class="toast" style={`--offset: ${offset};`} data-toast-id={toastId} data-state="closed" data-autoclose-time={autocloseTime} data-vertical={verticalPosition} data-horizontal={horizontalPosition} data-unmount={unmount} role="alert">
+<div id={`toast-${toastId}`} class:list={["toast", className]} style={offset && `--offset: ${offset};`} data-toast-id={toastId} data-state="closed" data-autoclose-time={autocloseTime} data-vertical={verticalPosition} data-horizontal={horizontalPosition} data-unmount={unmount} role="alert">
     <div class="toast-content">
         <slot/>
     </div>

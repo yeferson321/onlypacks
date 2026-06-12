@@ -1,0 +1,73 @@
+---
+interface Props {
+    accordionId: string;
+    className?: string;
+    type?: "single" | "multiple";
+};
+
+const { accordionId, className, type = "single" } = Astro.props;
+---
+
+<div id={`accordion-collapse-${accordionId}`} class:list={["accordion-collapse", className]} data-accordion-type={type}>
+    <slot/>
+</div>
+
+<style is:global>
+    [data-accordion-icon] {
+        transition: rotate var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
+    }
+
+    [data-accordion-item][data-state="open"] [data-accordion-icon] {
+        rotate: 180deg;
+    }
+
+    [data-accordion-body] {
+        overflow: hidden;
+        height: 0;
+        transition: height var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
+    }
+
+    [data-accordion-item][data-state="open"] [data-accordion-body] {
+        height: var(--accordion-body-height);
+    }
+</style>
+
+<script>
+    document.querySelectorAll<HTMLDivElement>(".accordion-collapse").forEach((accordion) => {
+        const isSingle = accordion.dataset.accordionType === "single";
+                                                          
+        const accordionItemElements = accordion.querySelectorAll<HTMLDivElement>("[data-accordion-item]");
+        let activeItemElement = accordion.querySelector<HTMLDivElement>('[data-accordion-item][data-state="open"]') ?? null;
+
+        const toggleItemState = (itemElement: HTMLDivElement, buttonElement: HTMLButtonElement, bodyElement: HTMLDivElement, isOpen: boolean) => {
+            itemElement.dataset.state = isOpen ? "closed" : "open";
+            buttonElement.setAttribute("aria-expanded", String(!isOpen));
+            bodyElement.setAttribute("aria-hidden", String(isOpen));
+            bodyElement.inert = isOpen;
+        };
+
+        const enforceSingleOpen = (itemElement: HTMLDivElement) => {
+            if (activeItemElement && activeItemElement !== itemElement) {
+                const activeButtonElement = activeItemElement.querySelector<HTMLButtonElement>("[data-accordion-button]");
+                const activeBodyElement = activeItemElement.querySelector<HTMLDivElement>("[data-accordion-body]");
+                toggleItemState(activeItemElement, activeButtonElement!, activeBodyElement!, true);
+            }
+
+            activeItemElement = itemElement;
+        };
+
+        accordionItemElements.forEach((itemElement) => {
+            const buttonElement = itemElement.querySelector<HTMLButtonElement>("[data-accordion-button]");
+            const bodyElement = itemElement.querySelector<HTMLDivElement>("[data-accordion-body]");
+            if (!buttonElement || !bodyElement) return;
+
+            bodyElement.style.setProperty("--accordion-body-height", `${bodyElement.scrollHeight}px`);
+
+            buttonElement.addEventListener("click", () => {
+                const isOpen = itemElement.dataset.state === "open";
+                if (isSingle) enforceSingleOpen(itemElement);
+                toggleItemState(itemElement, buttonElement, bodyElement, isOpen);
+            });
+        });
+    });
+</script>

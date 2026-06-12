@@ -21,6 +21,10 @@
 } */
 
 
+/* :focus-visible {
+  outline: 3px solid #3b5bdb;
+  outline-offset: 3px;
+} */
 
 :root {
     --transition-duration: 300ms;

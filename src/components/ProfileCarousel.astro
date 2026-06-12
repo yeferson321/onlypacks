@@ -15,21 +15,22 @@ const lastClonedItem = stories[0];
 	<div class="h-full rounded-b-4xl overflow-hidden">
 
 		<div class="flex h-full" data-carousel-wrapper>
+
 			{stories.map((storie: ImageData, index: number) => (
 			
 				<div id={`profile-historia-${index + 1}`} class="relative w-full h-full shrink-0" aria-hidden={index === 0 ? "false" : "true"} data-carousel-item> 
-					<img src={storie.url} width="326" height="580" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "low"} decoding={index === 0 ? "auto" : "async"} crossorigin="anonymous" class="w-full h-full object-cover object-[50%_10%]" alt={`Historia ${index + 1} de ${stories.length}`} />
-					<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%),	linear-gradient(to top, rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1), transparent 50%)`}></div>
-					<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%),	linear-gradient(to top, rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1), transparent 50%)`}></div>
+				
+					<img src={storie.url} width="326" height="500" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "low"} decoding={index === 0 ? "auto" : "async"} crossorigin="anonymous" class="w-full h-125 object-cover object-[50%_50%]" alt={`Historia ${index + 1} de ${stories.length}`} />
+					<div class="absolute z-20 inset-x-0 bottom-0 h-70 backdrop-blur-[0.5px]" style={`background: linear-gradient(0deg, rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1), rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1) 50%, transparent 100%)`}></div>
+					
 				</div> 
 				
 			))}
 			
 			<!-- Last cloned item (hidden) -->
 			<div class="relative w-full h-full shrink-0" aria-hidden="true" data-carousel-item> 
-				<img src={lastClonedItem.url} width="326" height="580" loading="lazy" fetchpriority="low" decoding="async" crossorigin="anonymous" class="w-full h-full object-cover object-[50%_10%]" alt={`Historia 1 de ${stories.length}`}/>
-				<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%), linear-gradient(to top, rgba(${lastClonedItem.avgColor.r},${lastClonedItem.avgColor.g},${lastClonedItem.avgColor.b},1), transparent 48%)`}></div>
-				<div class="pointer-events-none absolute inset-0" style={`background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 18%), linear-gradient(to top, rgba(${lastClonedItem.avgColor.r},${lastClonedItem.avgColor.g},${lastClonedItem.avgColor.b},1), transparent 48%)`}></div>
+				<img src={lastClonedItem.url} width="326" height="500" loading="lazy" fetchpriority="low" decoding="async" crossorigin="anonymous" class="w-full h-125 object-cover object-[50%_50%]" alt={`Historia 1 de ${stories.length}`}/>
+				<div class="absolute z-20 inset-x-0 bottom-0 h-70 backdrop-blur-[0.5px]" style={`background: linear-gradient(0deg, rgba(${lastClonedItem.avgColor.r},${lastClonedItem.avgColor.g},${lastClonedItem.avgColor.b},1), rgba(${lastClonedItem.avgColor.r},${lastClonedItem.avgColor.g},${lastClonedItem.avgColor.b},1) 50%, transparent 100%)`}></div>
 			</div> 
 			
 		</div>

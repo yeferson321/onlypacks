@@ -1,24 +1,23 @@
 ---
 interface Props {
     sidebarId: string;
+    className?: string;
+    overlayColor?: string;
     offset?: string;
     horizontalPosition?: 'left' | 'right';
     unmount?: boolean;
+    ariaLabel?: string;
 };
 
-const { sidebarId, offset = '3rem', horizontalPosition = 'right', unmount = false } = Astro.props;
+const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right', unmount = true, ariaLabel } = Astro.props;
 ---
            
-<div id={`sidebar-${sidebarId}`} class="sidebar" style={`--offset: ${offset};`} data-sidebar-id={sidebarId} data-state="closed" data-horizontal={horizontalPosition} data-unmount={unmount}>
-    <div class="sidebar-overlay"></div>
-    <div class="pointer-events-none fixed inset-0 overflow-hidden">
-        <div class="pointer-events-none absolute inset-0 overflow-hidden">
-            <div class="pointer-events-none fixed inset-y-0 flex max-w-full sidebar-panel">
-                <div class="pointer-events-auto w-screen max-w-76">
-                    <div class="sidebar-content flex h-full flex-col overflow-y-auto bg-white shadow-xl">
-                       hola
-                    </div>
-                </div>
+<div id={`sidebar-${sidebarId}`} class:list={["sidebar", className]} data-sidebar-id={sidebarId} data-state="closed" data-horizontal={horizontalPosition} data-unmount={unmount} tabindex="-1" role="dialog" aria-modal="true" aria-label={ariaLabel}>
+    <div class="sidebar-overlay" style={overlayColor && `--overlay-color: ${overlayColor};`}></div>
+    <div class="sidebar-wrapper">
+        <div class="sidebar-panel" style={offset && `--offset: ${offset};`}>
+            <div class="sidebar-content">
+                <slot/>
             </div>
         </div>
     </div>
@@ -39,28 +38,43 @@ const { sidebarId, offset = '3rem', horizontalPosition = 'right', unmount = fals
     position: fixed;
     inset: 0px;
     opacity: 0;
-    background-color: rgb(0 0 0 / 15%);
+    background-color: var(--overlay-color);
     backdrop-filter: blur(1px);
     transition: opacity var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
 }
 
-.sidebar[data-state="open"] > .sidebar-overlay  {
-    opacity: 1;
+.sidebar[data-state="open"] > .sidebar-overlay { opacity: 1; }
+
+.sidebar-wrapper {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+}
+
+.sidebar-panel {
+    position: fixed;
+    inset-block: 0px;
+    display: flex;
+    max-width: 100%;
 }
 
 .sidebar[data-horizontal="right"] .sidebar-panel { right: 0; padding-left: var(--offset); }
 .sidebar[data-horizontal="left"] .sidebar-panel { left: 0; padding-right: var(--offset); }
 
-.sidebar[data-horizontal="left"] .sidebar-content { --translateX: -100%; }
-.sidebar[data-horizontal="right"] .sidebar-content { --translateX: 100%; }
-
 .sidebar-content {
+    pointer-events: auto;
+    display: flex;
+    width: fit-content;     
     opacity: 0;
     transform: translateX(var(--translateX));
     transition: 
         opacity var(--transition-duration, 300ms) var(--transition-timing, ease-in-out), 
         transform var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
 }
+
+.sidebar[data-horizontal="left"] .sidebar-content { --translateX: -100%; }
+.sidebar[data-horizontal="right"] .sidebar-content { --translateX: 100%; }
 
 .sidebar[data-state="open"] .sidebar-content {
     opacity: 1;
@@ -83,8 +97,41 @@ const { sidebarId, offset = '3rem', horizontalPosition = 'right', unmount = fals
 
         const openButtonElement = document.querySelector<HTMLButtonElement>(`[data-sidebar-open="${sidebarId}"]`);
         const closeButtonElement = sidebarElement.querySelector<HTMLButtonElement>("[data-sidebar-close]");
+        const focusableElement = sidebarElement.querySelector<HTMLElement>("[data-sidebar-autofocus]");
+        let lastFocusedElement: HTMLElement | null = null;
 
-        const handleKeydown = (event: KeyboardEvent) => event.key === "Escape" && hideSidebar();
+        const setAccessibility = (isOpen: boolean) => {
+            openButtonElement?.setAttribute("aria-expanded", String(isOpen));
+        };
+
+        const handleKeyboard = (event: KeyboardEvent) => {
+            if (event.key === "Escape") return hideSidebar();
+
+            /* if (event.key !== "Tab") return; */
+
+            /* if (event.key === "Tab" && !event.shiftKey) trapFocus(event); */
+
+            console.log("handleKeyboard")
+            
+            const focusables = Array.from(
+                sidebarElement.querySelectorAll<HTMLElement>(':is(button, [href], input, select, textarea):not([disabled]):not([aria-hidden="true"])')
+            ).filter((HTMLElement) => HTMLElement.offsetParent !== null);
+
+            if (focusables.length === 0) return;
+
+            const firstFocusable = focusables[0];
+            const lastFocusable = focusables[focusables.length - 1];
+
+            if (document.activeElement === lastFocusable) {
+                event.preventDefault();
+                firstFocusable.focus();
+            }
+
+            if (document.activeElement === firstFocusable) {
+                event.preventDefault();
+                lastFocusable.focus();
+            }
+        };
 
         const showSidebar = () => {
             if (sidebarElement.dataset.state !== "closed") return;
@@ -96,14 +143,25 @@ const { sidebarId, offset = '3rem', horizontalPosition = 'right', unmount = fals
             
             requestAnimationFrame(() => {
                 sidebarElement.dataset.state = "open";
-                window.addEventListener("keydown", handleKeydown); 
+
+                window.addEventListener("keydown", handleKeyboard); 
+                
+                setAccessibility(true);
+
+                lastFocusedElement = document.activeElement as HTMLElement;
+
+                (focusableElement || sidebarElement)?.focus();
             });
         };
 
         const hideSidebar = () => {
             if (sidebarElement.dataset.state !== "open") return;
-            window.removeEventListener("keydown", handleKeydown);
 
+            window.removeEventListener("keydown", handleKeyboard);
+            setAccessibility(false);
+
+            lastFocusedElement?.focus();
+            
             console.log("hola hide sidebar")
             
             sidebarElement.dataset.state = "closing";

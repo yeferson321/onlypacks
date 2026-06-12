@@ -2,6 +2,7 @@
 import '@/styles/global.css';
 import Profile from '@/components/Profile.astro';
 import ProfileTabs from '@/components/ProfileTabs.astro';
+import Accordion from '@/components/common/Accordion.astro';
 
 
 /* import { ClientRouter } from 'astro:transitions'; */
@@ -24,10 +25,10 @@ const data = {
 	],
 	presentation: "Oh no.. encontraste mi pequeña pagina secreta, no soy tan inocente como parece 🤭",
 	stories: [
-		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/587945739_18035665655726783_481255841642948261_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzc4NDY1MDk0NDQyMDU3NjY4OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=opuzTz4dmpUQ7kNvwEP7BBf&_nc_oc=Adp_S3v7HpZipBeJ6QXvDsINymQQ2lHtknEbXtv4Q9WERHtLl3t0cnzSFlFUm_AnrsA&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=ZsmkiwSbKkr7PXBAH6kcPA&_nc_ss=7a22e&oh=00_Af3ukHeqai7gQWO3XT5Eho-GJcYGkYGZP_fGlfzRq7TPPQ&oe=69F54BAA", avgColor: { "r": 35, "g": 5, "b": 0 } }, 
-		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/640472583_18044292485726783_919247564699627058_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzg0MTE4OTQ0Njc1ODc1NTgzOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=ht3ukKXTrboQ7kNvwG3YBR1&_nc_oc=Adq9HDQrnaEx5-9b90NE2F2KMPXNTocjS_tUhpZ2nUWvqjuv7AcZn6htpp8uQYA_uOY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=GD9DmqblDxGcFbKYa7UoBQ&_nc_ss=7a22e&oh=00_Af2qVSlbpRSSnYncf8gmlvb43JrYTOLy9j9gSYAiqwODMw&oe=69F55B19", avgColor: { "r": 125, "g": 108, "b": 104 } },
-		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/545350537_18025204571726783_2718374900724780589_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzcxODYyOTQzMTE4Mzk4MTQ2NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=cqLaWypmYNwQ7kNvwFYzHdx&_nc_oc=AdrqY5lFeV_LrZV_K74Dlj05IXvIaDtTbnbnBLech0v5o2BfmEMFg3rV6Tybn1H11Kg&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=Y1SyH39Xpfdt-QWjTPslRw&_nc_ss=7a22e&oh=00_Af3vGwwlZZiZP6umanUmOd_yO0v1peGtrnZxKlcMrVJkTw&oe=69F56C17", avgColor: { "r": 0, "g": 6, "b": 29 } },
-		{ url: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/654321336_18047667605726783_3903591061680978972_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzg1NTY3OTUyNDY1ODgwNjA4MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkxOS5zZHIuQzMifQ%3D%3D&_nc_ohc=b89Xq0SO99cQ7kNvwFGgm-8&_nc_oc=Adr9_aU-1N6XEr4GmEcewhkfQkoEL9ePCf2jbmxHnlCw5VaYmlw9uVz7aBRk50iAHY8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=hOUYbPlWakLduJRnistpQA&_nc_ss=7a22e&oh=00_Af13A4t0EF7zxzgsfNcQZKL2gdSOBQzxqolHk3gVh8mc-Q&oe=69F562D0", avgColor: { "r": 105, "g": 50, "b": 18 } },
+		{ url: "https://instagram.fclo9-1.fna.fbcdn.net/v/t51.82787-15/587945739_18035665655726783_481255841642948261_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzc4NDY1MDk0NDQyMDU3NjY4OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=xC0BBiTG1WsQ7kNvwH3RI65&_nc_oc=Adovyrg60CQt3XmlLDUTCh4yMYUNXMB4TAaVgKRiXkE5JZFHdmcqTl7Z1OtcfNVMNNE&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo9-1.fna&_nc_gid=B5ztTNVvBBHDN_WifAnXyw&_nc_ss=7a22e&oh=00_Af4ctzPZE34KSTbjsOn7OAaKU2kIg4xJeafKqevUEpGMeg&oe=6A14B76A", avgColor: { "r": 35, "g": 5, "b": 0 } }, 
+		{ url: "https://instagram.fclo9-1.fna.fbcdn.net/v/t51.82787-15/640472583_18044292485726783_919247564699627058_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzg0MTE4OTQ0Njc1ODc1NTgzOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=90RC8zSmt-gQ7kNvwHHQQRY&_nc_oc=AdryD8naMegv-lQnefBIjewFZ9MAcnQETo-9mBrmK03KKhI5pHlnUcSyxqT6Vy8_whE&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo9-1.fna&_nc_gid=gNqkSbyjvt_laV-tkL58XA&_nc_ss=7a22e&oh=00_Af7OS6pAvMIic9P9u9EnfKTNgOfPpKvwKxJXaD3Nfpv92g&oe=6A14C6D9", avgColor: { "r": 125, "g": 108, "b": 104 } },
+		{ url: "https://instagram.fclo9-1.fna.fbcdn.net/v/t51.82787-15/544007521_18025204550726783_1201138912730009300_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzcxODYyOTQzMTQ2OTE1MTg5NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=CsvtE5qN9dQQ7kNvwHk5PMA&_nc_oc=AdrCvZzG6XAJxFgGkqdBRz9yGD1IpMnTc5VyXpEiSdYEVaH3NFbRBx9vtICjA-5uY1g&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo9-1.fna&_nc_gid=B5ztTNVvBBHDN_WifAnXyw&_nc_ss=7a22e&oh=00_Af7-FLl_EsvkEYdped6tahtHk-c4bIjzIw77hJp-Q2Q9-A&oe=6A14C56A", avgColor: { "r": 0, "g": 6, "b": 29 } },
+		{ url: "https://instagram.fclo9-1.fna.fbcdn.net/v/t51.82787-15/619575208_18040424228726783_466982011838096201_n.jpg?stp=dst-jpegr_e35_tt6&_nc_cat=104&ig_cache_key=MzgxNjQyODgxNjMyMzYwODM0NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5oZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=T7KzYzaJ9lIQ7kNvwHsAESa&_nc_oc=AdqoCPzFnj7KN6zCLECRjeuxSTI466qk-SfOPGCToMlxv1SS_MUWQX0bvs4A4D1RPrQ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo9-1.fna&_nc_gid=HSHtby1WNlJ1DWCPRFjUnA&_nc_ss=7a22e&oh=00_Af6fwgCudtT4woRDieg9D8Ov4Qi7nVur1IRHJ0e-yslKuA&oe=6A14A4DB", avgColor: { "r": 105, "g": 50, "b": 18 } },
 
 /* 		"https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/545350537_18025204571726783_2718374900724780589_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzcxODYyOTQzMTE4Mzk4MTQ2NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=H1iSMM_oZk8Q7kNvwGOTyYG&_nc_oc=Adq_4s0QRfLt6Av3hdZyblBlXA9CZYFdxu9ZsxVhy3JezyGoao_mANneo_SeQjfgud8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=jRdmZi_VW2XN2R5qeJVoUQ&_nc_ss=7a32e&oh=00_AfwNnJyx1GPN7nYxheGDAnvPV-fzkbsJ9RGvdNXfdqjUEA&oe=69CDA6D7",
 		"https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/640472583_18044292485726783_919247564699627058_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzg0MTE4OTQ0Njc1ODc1NTgzOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=eX7n8zi3pEkQ7kNvwHh-Suy&_nc_oc=AdqVOAJGpGZ0Zau3IpEmEg7nYppNwSD0ANbXxALuBPMowdqHl8I55FrgsGRqSnfcWZI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=Qb81ez5OU25eiqqJjmMf5A&_nc_ss=7a32e&oh=00_AfxFl1OagrGsS_BwHnrR3sPHj4pUoAtlZ5DSY4CNiKU6dg&oe=69CDCE19" */
@@ -36,6 +37,10 @@ const data = {
 	coverImage: "https://instagram.fclo8-1.fna.fbcdn.net/v/t51.82787-15/615560080_18566524399004734_7689088172594112968_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzgwODg5MTc3MjQ4MDA0NDEyNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=p6n7HvH-l9EQ7kNvwEPMjce&_nc_oc=AdqYACr9GepWmsegvjqTwhQTNuMv0Fgcu1WtEKVPRuOyuKqK2RmBTnijiIdgKZ_D5W0&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fclo8-1.fna&_nc_gid=ikwhNGhmeE_qekCwOYJuKg&_nc_ss=7a32e&oh=00_AfwqhruoA137HIYppG065--mdBgVG7CuaM3N9B4JVUDeog&oe=69CD9243", */
 };
 
+const questions = [
+	{ question: "Mac and iPhone", answer: "Answer calls or messages from your iPhone directly on your Mac." },
+	{ question: "Mac and Apple Watch", answer: "Automatically log in to your Mac when you’re wearing your Apple Watch with Auto Unlock. No password t⁠y⁠p⁠i⁠n⁠g⁠ ⁠r⁠e⁠q⁠u⁠i⁠r⁠e⁠d⁠." }
+]
 const { username, tab } = Astro.props;
 ---
 
@@ -54,12 +59,89 @@ const { username, tab } = Astro.props;
 		<Profile profile={data} />
 		
 		<!-- <ProfileTabs username={username} tab={tab}/> -->
+
+		<!-- <h2 class="px-8 mt-8 mb-4 text-3xl font-medium text-neutral-800">Preguntas frecuentes</h2>
 		 
-			<main class="scroll-container">
-				<slot />
-			</main>
-		</body>
-	</html>
+		<Accordion accordionId="questions" className="px-8">
+
+			{questions.map(({ question, answer }, index) => (
+
+	  		  	<div class="border-b border-neutral-300" data-state={index === 0 ? "open" : "closed"} data-accordion-item>
+					
+					<h3 id={`accordion-heading-questions-${index + 1}`}>
+    		    		<button type="button" class="flex items-center justify-between gap-3 w-full py-4 text-xl font-medium text-neutral-800" data-accordion-button aria-expanded={index === 0 ? "true" : "false"} aria-controls={`accordion-body-questions-${index + 1}`}>
+						
+    		    		    <span>{question}</span>
+						
+    		    		    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6 shrink-0 stroke-neutral-600" data-accordion-icon>
+    		    		        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    		    		    </svg>
+						
+    		    		</button>
+					</h3>
+
+    		    	<div id={`accordion-body-questions-${index + 1}`} data-accordion-body aria-labelledby={`accordion-heading-questions-${index + 1}`} inert={index !== 0} aria-hidden={index !== 0 ? "true" : "false"}>
+    		    	    <p class="mb-4 text-base text-neutral-800">{answer}</p>
+    		    	</div>
+			
+    			</div>
+
+	  		))}
+
+		</Accordion> -->
+
+						
+			<!-- <div id={`profile-historia-${index + 1}`} class="relative w-full h-full shrink-0" aria-hidden={index === 0 ? "false" : "true"} data-carousel-item> 
+			
+				<img src={storie.url} width="326" height="500" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "low"} decoding={index === 0 ? "auto" : "async"} crossorigin="anonymous" class="w-full h-125 object-cover object-[50%_50%]" alt={`Historia ${index + 1} de ${stories.length}`} />
+				<div class="absolute z-20 inset-x-0 bottom-0 h-70 backdrop-blur-[0.5px]" style={`background: linear-gradient(0deg, rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1), rgba(${storie.avgColor.r},${storie.avgColor.g},${storie.avgColor.b},1) 50%, transparent 100%)`}></div>
+				
+			</div>  -->
+			
+
+			<!-- <div id="accordion-collapse-heading-1" class="border-b border-neutral-300">
+					
+    		    <button type="button" class="flex items-center justify-between gap-3 w-full py-5 text-xl font-medium text-neutral-800" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+				
+    		        <span>Mac and iPhone</span>
+				
+    		        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6 shrink-0 stroke-neutral-600" data-accordion-icon>
+    		            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    		        </svg>
+				
+    		    </button>
+			
+    		    <div id="accordion-collapse-body-1" class="accordion-content" >
+    		        <p class="mb-5 text-base text-neutral-800">Answer calls or messages from your iPhone directly on your Mac.</p>
+    		    </div>
+			
+    		</div>
+		
+    		<div id="accordion-collapse-heading-2" class="">
+			
+    		    <button type="button" class="flex items-center justify-between gap-3 w-full py-5 text-xl font-medium text-neutral-800">
+				
+    		        <span>Mac and Apple Watch</span>
+				
+    		        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6 shrink-0 stroke-neutral-600" data-accordion-icon>
+    		            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    		        </svg>
+				
+    		    </button>
+			
+    		    <div class="accordion-content">
+    		        <p class="mb-5 text-base text-neutral-800">Automatically log in to your Mac when you’re wearing your Apple Watch with Auto Unlock. No password t⁠y⁠p⁠i⁠n⁠g⁠ ⁠r⁠e⁠q⁠u⁠i⁠r⁠e⁠d⁠.</p>
+    		    </div>
+			
+    		</div> -->
+		
+
+		<main class="h-100 scroll-container">
+			<slot />
+		</main>
+
+	</body>
+</html>
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Righteous&display=swap');
