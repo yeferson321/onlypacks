@@ -8,8 +8,14 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  devToolbar: {
-    enabled: false
+  devToolbar: { enabled: false },
+  adapter: cloudflare(),
+  i18n: {
+    locales: ["en", "es", "pt"],
+    defaultLocale: "en",
+    routing: {
+      prefixDefaultLocale: false,
+      // redirectToDefaultLocale: true
+    }
   },
-  adapter: cloudflare()
 });

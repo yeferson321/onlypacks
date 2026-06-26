@@ -4,17 +4,19 @@ export const prerender = false;
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 
 const pages = [
-  { username: 'sofia' },
-  { username: 'daniela' }
+    { username: 'sofiapalmer' },
+    { username: 'daniela' }
 ];
 
 const { username, tab } = Astro.params;
+
+// console.log(locale, username);
 
 const page = pages.find((page) => page.username === username);
 
 if (!page) return Astro.redirect("/404");
 ---
 
-<ProfileLayout username={username} tab={tab} >
-
+<ProfileLayout username={username} tab={tab}>
+    
 </ProfileLayout>

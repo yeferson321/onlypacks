@@ -1,0 +1,50 @@
+---
+import '@/styles/global.css';
+import ModalLanguage from '@/components/ModalLanguage.astro';
+
+const { locale = "en", username, tab } = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+	<head>
+		<!-- <ClientRouter /> -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro Basics</title>
+	</head>
+	<body>
+
+		<button type="button" class="p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-300 ease-in-out" data-modal-open="language-modal" aria-label="Abrir modal de cambio de idioma" aria-haspopup="dialog" aria-expanded="false" aria-controls="language-modal">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="26" height="26" class="stroke-blue-500">
+			  	<path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" />
+			</svg>
+		</button>
+
+		<ModalLanguage/>
+
+		<main class="h-100 scroll-container">
+			<slot />
+		</main>
+
+	</body>
+</html>
+
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Righteous&display=swap');
+
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+
+		font-family: "Figtree", sans-serif;
+  		font-optical-sizing: auto;
+  		font-weight: 400;
+  		font-style: normal;
+	}
+</style>

@@ -18,11 +18,11 @@ export const prerender = false;
 
 import MainLayout from '@/layouts/MainLayout.astro';
 
-const { username, tab } = Astro.params;
+const { locale, username, tab } = Astro.params;
 
 console.log(Astro.preferredLocale, Astro.preferredLocaleList, Astro.currentLocale)
 ---
 
-<MainLayout username={username} tab={tab}>
-	<h1>Current messages: {Astro.preferredLocale} main</h1>
+<MainLayout locale={locale} username={username} tab={tab}>
+	<h1>Current messages: {Astro.preferredLocale} locale</h1>
 </MainLayout>

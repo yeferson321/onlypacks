@@ -4,7 +4,6 @@ import Profile from '@/components/Profile.astro';
 import ProfileTabs from '@/components/ProfileTabs.astro';
 import Accordion from '@/components/common/Accordion.astro';
 
-
 /* import { ClientRouter } from 'astro:transitions'; */
 
 const data = {
@@ -41,11 +40,12 @@ const questions = [
 	{ question: "Mac and iPhone", answer: "Answer calls or messages from your iPhone directly on your Mac." },
 	{ question: "Mac and Apple Watch", answer: "Automatically log in to your Mac when you’re wearing your Apple Watch with Auto Unlock. No password t⁠y⁠p⁠i⁠n⁠g⁠ ⁠r⁠e⁠q⁠u⁠i⁠r⁠e⁠d⁠." }
 ]
-const { username, tab } = Astro.props;
+
+const { locale = "en", username, tab } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={locale}>
 	<head>
 		<!-- <ClientRouter /> -->
 		<meta charset="UTF-8" />

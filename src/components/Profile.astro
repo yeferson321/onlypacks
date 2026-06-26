@@ -4,15 +4,21 @@ import IconVerification from '@/icons/outline/IconVerification.svg';
 import IconPhoto from '@/icons/outline/IconPhoto.svg';
 import IconVideoCamera from '@/icons/outline/IconVideoCamera.svg';
 import IconSpeakerWave from '@/icons/outline/IconSpeakerWave.svg';
-import IconHeart from '@/icons/outline/IconHeart.svg';
+
 import IconBars3Right from '@/icons/outline/IconBars3Right.svg';
 import IconLink from '@/icons/outline/IconLink.svg';
 import IconXmark from '@/icons/outline/IconXmark.svg';
 import Sidebar from '@/components/common/Sidebar.astro';
 import Modal from '@/components/common/Modal.astro'
 import Toast from '@/components/common/Toast.astro';
+
+
 import ProfileCarousel from '@/components/ProfileCarousel.astro';
-import Input from './common/Input.astro';
+import ModalLanguage from '@/components/ModalLanguage.astro';
+
+import IconHeart from '@/icons/outline/IconHeart.svg';
+
+import LoginModal from '@/components/LoginModal.astro';
 
 interface Props {
 	profile: Profile;
@@ -138,61 +144,29 @@ const formatNumber = (number: number) => {
     		    	    <p class="mb-4 text-base text-neutral-800">{answer}</p>
     		    	</div> -->
 
+				<!-- <a href={getRelativeLocaleUrl("en", "sofiapalmer")} lang="en">English</a>
+				<a href={getRelativeLocaleUrl("es", "sofiapalmer")} lang="es">Español</a>
+
+				<nav aria-label="Language selector">
+					<a href={`/${profile.username.toLocaleLowerCase()}`} lang="en">English</a>
+					<a href={`/es/${profile.username.toLocaleLowerCase()}`} lang="es">Español</a>
+					<a href={`/pt/${profile.username.toLocaleLowerCase()}`} lang="pt">Português</a>
+				</nav> -->
+
+				<button type="button" class="p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-300 ease-in-out" data-modal-open="language-modal" aria-label="Abrir modal de cambio de idioma" aria-haspopup="dialog" aria-expanded="false" aria-controls="language-modal">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="26" height="26" class="stroke-blue-500">
+					  	<path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" />
+					</svg>
+				</button>
+
+				<ModalLanguage url={profile.username.toLocaleLowerCase()}/>
+
 				<button type="button" class="p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-300 ease-in-out" data-modal-open="login-modal" aria-label="Abrir modal de inicio de sesión" aria-haspopup="dialog" aria-expanded="false" aria-controls="login-modal">
 					<IconHeart stroke-width="2" width="26" height="26" class="stroke-blue-500"/>
 				</button>
 
-				<Modal modalId="login-modal" offset="2rem" verticalPosition="center">
-					
-        			<div class="p-8 rounded-3xl bg-white text-left shadow-xl  sm:my-8 sm:w-full sm:max-w-lg ">
-					
-        			    <h2 class="" id="login-modal-title">Bienvenido de nuevo</h2>
-        			    <h3 class="">Inicia sesión en tu cuenta.</h3>
-					
-        			    <form class="mt-4 max-w-md mx-auto space-y-4.5"> 
-							<Input type="email" labelText="Tu correo electrónico"/>  
-							<Input type="password" labelText="Tu contraseña"/> 
-        			        <!-- <label for="search" class="block mb-2.5 text-sm font-medium text-heading sr-only ">Buscar</label>
-        			        <div class="relative">
-        			            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-        			                <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
-        			            </div>
-        			            <input type="search" id="search" data-modal-autofocus class="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Search" required />
-        			            <button type="button" class="absolute end-1.5 bottom-1.5 text-white bg-brand hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none">Search</button>
-        			        </div> -->
-							<!-- git push -u origin main -->
-							<!-- git commit -m "feat: initial Smtp EMAIL sender setup" -->
-        			    </form>
-					
-        			    <div class="mt-4 flex gap-3">
-        			        <button class="flex-1 flex justify-center p-2 rounded-2xl bg-neutral-500/20" aria-label="Inicia sesion con Google">
-        			            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        			                <path d="M22.7861 9.84565H21.9V9.8H12V14.2H18.2167C17.3097 16.7613 14.8727 18.6 12 18.6C8.35515 18.6 5.4 15.6449 5.4 12C5.4 8.35515 8.35515 5.4 12 5.4C13.6825 5.4 15.2131 6.0347 16.3786 7.07145L19.4899 3.9601C17.5253 2.12915 14.8974 1 12 1C5.92525 1 1 5.92525 1 12C1 18.0748 5.92525 23 12 23C18.0748 23 23 18.0748 23 12C23 11.2625 22.9241 10.5425 22.7861 9.84565Z" fill="#FFC107"/>
-        			                <path d="M2.2683 6.88005L5.88235 9.5305C6.86025 7.1094 9.22855 5.4 12 5.4C13.6825 5.4 15.2131 6.0347 16.3786 7.07145L19.4899 3.9601C17.5253 2.12915 14.8974 1 12 1C7.7749 1 4.1108 3.38535 2.2683 6.88005Z" fill="#FF3D00"/>
-        			                <path d="M12 23C14.8413 23 17.423 21.9127 19.375 20.1444L15.9705 17.2635C14.8661 18.1001 13.4933 18.6 12 18.6C9.1389 18.6 6.70955 16.7757 5.79435 14.2297L2.20725 16.9935C4.02775 20.5558 7.72485 23 12 23Z" fill="#4CAF50"/>
-        			                <path d="M22.7861 9.84565H21.9V9.8H12V14.2H18.2167C17.7811 15.4303 16.9896 16.4913 15.9688 17.2641L15.9705 17.2635L19.375 20.1444C19.1341 20.3633 23 17.5 23 12C23 11.2625 22.9241 10.5425 22.7861 9.84565Z" fill="#1976D2"/>
-        			            </svg>
-        			        </button>
-						
-        			        <button class="flex-1 flex justify-center p-2 rounded-2xl bg-neutral-500/200" aria-label="Inicia sesion con Apple">
-        			            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        			                <g opacity="0.9">
-        			                    <path d="M20.4717 8.54484C20.3733 8.60645 18.0304 9.90673 18.0304 12.7898C18.1408 16.0777 20.9871 17.2307 21.0359 17.2307C20.9871 17.2923 20.6062 18.8015 19.4779 20.3834C18.5825 21.7461 17.5887 23.12 16.0796 23.12C14.6441 23.12 14.1288 22.2118 12.4724 22.2118C10.6936 22.2118 10.1903 23.12 8.82842 23.12C7.31929 23.12 6.25186 21.6725 5.30765 20.3226C4.08099 18.5558 3.03836 15.7832 3.00155 13.121C2.97675 11.7103 3.24721 10.3236 3.93376 9.14577C4.90277 7.50141 6.63274 6.38517 8.52195 6.34836C9.96947 6.29955 11.2577 7.34218 12.1411 7.34218C12.9877 7.34218 14.5705 6.34836 16.3613 6.34836C17.1342 6.34916 19.1955 6.58201 20.4717 8.54484ZM12.0187 6.0667C11.7611 4.77842 12.4724 3.49014 13.135 2.66836C13.9815 1.67455 15.3186 1 16.4717 1C16.5453 2.28828 16.0788 3.55175 15.245 4.47195C14.4969 5.46577 13.2086 6.21393 12.0187 6.0667Z" fill="black"/>
-        			                </g>
-        			            </svg>
-        			        </button>
-        			    </div>
-					
-        			    <p class="mt-4 text-sm text-neutral-800">
-        			        Al continuar, aceptas los términos de Supabase. <a>Condiciones de servicio</a> y <a>Política de privacidad</a>
-        			    </p>
-
-						<button type="button" class="absolute top-3 end-2.5" data-modal-close aria-label="Cerrar modal">
-							<IconXmark stroke-width="1.6" width="28" height="28" class="stroke-neutral-500"/>
-						</button>
-					
-        			</div>
-				</Modal>
+				<LoginModal/>
+				
 
 				<!-- <button type="button" id="share-button" class="p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-300 ease-in-out">
 					<IconLink stroke-width="2" width="26" height="26" class="stroke-blue-500"/>
@@ -276,6 +250,16 @@ const formatNumber = (number: number) => {
 </style>
 
 <script>
+
+
+	// document.addEventListener("click", (event) => {
+	// 	const link = event.target.closest("a[lang]");
+
+	// 	if (!link) return;
+
+	// 	document.documentElement.lang = link.lang;
+	// });
+
 /* import { emit } from "@/utils/events";
  */
 	/* const sidebarButtonElement = document.getElementById("menu-button");

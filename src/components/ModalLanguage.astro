@@ -1,0 +1,55 @@
+---
+import Modal from '@/components/common/Modal.astro';
+import IconXmark from '@/icons/outline/IconXmark.svg';
+
+interface Props {
+	url?: string;
+};
+
+const { url } = Astro.props;
+
+const defaultLocale = "en";
+
+const locales = [
+  	{ code: "en", language: "English" },
+  	{ code: "es", language: "Español" },
+  	{ code: "pt", language: "Português" },
+  	{ code: "fr", language: "Français" },
+  	{ code: "de", language: "Deutsch" },
+  	{ code: "ja", language: "日本語" },
+  	{ code: "ru", language: "Русский" },
+  	{ code: "hi", language: "हिन्दी" },
+  	{ code: "tr", language: "Türkçe" },
+  	{ code: "it", language: "Italiano" },
+  	{ code: "ar", language: "العربية" },
+  	{ code: "zh", language: "中文" },
+];
+
+const getLocaleHref = (locale: string, defaultLocale: string, url?: string) => {
+  	if (!url) return locale === defaultLocale ? "/" : `/${locale}`;
+
+  	return locale === defaultLocale ? `/${url}` : `/${locale}/${url}`;
+};
+---
+
+<Modal modalId="language-modal" offset="2rem" verticalPosition="center">
+					
+    <div class="px-8 pt-12 pb-8 sm:my-8 sm:w-full sm:max-w-lg rounded-3xl border border-neutral-200/70 bg-white">
+						
+		<!-- <h2 id="language-modal-title" class="text-center text-2xl font-medium text-neutral-800">Crea tu cuenta Wise</h2> -->
+
+        <nav class="grid grid-cols-2 gap-4" aria-label="Language selector">
+        	{ locales.map(({ code, language }) => (
+        		<a href={getLocaleHref(code, defaultLocale, url)} class="p-2 rounded-2xl border border-neutral-200/70 text-center text-base bg-neutral-100" lang={code}>
+        			{language}
+        		</a>
+        	))}
+        </nav>
+	
+		<button type="button" class="absolute top-3 inset-e-7" data-modal-close aria-label="Cerrar modal">
+			<IconXmark stroke-width="1.8" width="28" height="28" class="stroke-neutral-600"/>
+		</button>
+					
+    </div>
+
+</Modal>

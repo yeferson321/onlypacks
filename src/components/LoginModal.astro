@@ -1,0 +1,59 @@
+---
+import Modal from '@/components/common/Modal.astro';
+import Input from '@/components/common/Input.astro';
+import IconGoogle from '@/icons/brands/colored/IconGoogle.svg';
+import IconApple from '@/icons/brands/colored/IconApple.svg';
+import IconXmark from '@/icons/outline/IconXmark.svg'
+
+// const locale = Astro.preferredLocale;
+
+// console.log(Astro.preferredLocale, Astro.preferredLocaleList, Astro.currentLocale)
+---
+
+<!-- <h1>Current locale: {locale}</h1> -->
+
+<Modal modalId="login-modal" offset="2rem" verticalPosition="center">
+					
+    <div class="px-8 pt-12 pb-8 sm:my-8 sm:w-full sm:max-w-lg rounded-3xl border border-neutral-200/70 bg-white">
+						
+		<h2 id="login-modal-title" class="text-center text-2xl font-medium text-neutral-800">Crea tu cuenta Wise</h2>
+
+		<p class="mt-2 text-center text-base text-neutral-800">¿Ya tienes una cuenta? <a class="underline font-medium">Inicia sesión</a></p>
+
+        <form class="mt-6"> 
+
+			<div class="space-y-2">
+				<Input type="text" autocomplete="name" labelText="Tu nombre de usuario" required={true}/> 
+				<Input type="email" autocomplete="email" labelText="Tu correo electrónico" minLength={6} maxLength={245} required={true}/>  
+				<Input type="password" autocomplete="new-password" labelText="Tu contraseña" required={true}/> 
+			</div>
+
+			<button type="submit" class="mt-2 w-full p-2 rounded-3xl text-center text-lg font-medium text-white bg-blue-500">Inscribirse</button>
+        			    
+		</form>
+
+		<p class="mt-6 text-center text-base text-neutral-800">También puedes usar</p>
+					
+        <div class="mt-4 flex gap-3">
+
+        	<button class="flex-1 flex justify-center p-2 rounded-2xl border border-neutral-200/70 bg-neutral-100" aria-label="Inicia sesion con Google">
+        	    <IconGoogle width="24" height="24"/>
+        	</button>
+						
+        	<button class="flex-1 flex justify-center p-2 rounded-2xl border border-neutral-200/70  bg-neutral-100" aria-label="Inicia sesion con Apple">
+        	    <IconApple width="24" height="24"/>
+        	</button>
+
+        </div>
+
+		<p class="mt-6 text-center text-sm text-neutral-800">
+            Al registrarte, aceptas nuestras <a class="underline font-medium">Condiciones de Uso</a> y <a class="underline font-medium">Política de Privacidad</a>
+        </p>
+	
+		<button type="button" class="absolute top-3 inset-e-7" data-modal-close aria-label="Cerrar modal">
+			<IconXmark stroke-width="1.8" width="28" height="28" class="stroke-neutral-600"/>
+		</button>
+					
+    </div>
+
+</Modal>

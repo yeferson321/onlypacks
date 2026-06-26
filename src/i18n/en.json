@@ -1,0 +1,49 @@
+{
+    "about": {
+        "title": "About us"
+    },
+
+    "messages": {
+        "name": {
+            "REQUIRED": "Name is required",
+            "TOO_SHORT": "Name is too short",
+            "TOO_LONG": "Name is too long",
+            "INVALID_CHARS": "Only letters, spaces, apostrophes and hyphens allowed",
+            "SPACES": "Consecutive spaces are not allowed",
+            "INVALID": "Enter a valid name"
+        },
+      
+        "username": {
+            "REQUIRED": "Username is required",
+            "TOO_SHORT": "Username is too short",
+            "TOO_LONG": "Username is too long",
+            "INVALID_CHARS": "Only letters, numbers, dots and underscore allowed",
+            "NO_SPACES": "Spaces are not allowed",
+            "CONSECUTIVE_DOTS": "Consecutive dots are not allowed",
+            "INVALID_DOTS_POSITION": "Dot cannot be at start or end",
+            "INVALID": "Enter a valid username"
+        },
+      
+        "email": {
+            "REQUIRED": "Email is required",
+            "TOO_SHORT": "Email is too short",
+            "TOO_LONG": "Email is too long",
+            "MISSING_AT": "Missing @ symbol",
+            "MISSING_LOCAL_PART": "Add text before @",
+            "MISSING_DOMAIN": "Add domain after @",
+            "INVALID": "Invalid email"
+        },
+      
+        "new-password": {
+            "REQUIRED": "Password is required",
+            "NO_SPACES": "Cannot contain spaces",
+            "TOO_SHORT": "Must have at least 8 characters",
+            "TOO_LONG": "Must have at most 8 characters",
+            "MISSING_UPPERCASE": "Add an uppercase letter",
+            "MISSING_LOWERCASE": "Add a lowercase letter",
+            "MISSING_NUMBER": "Add a number",
+            "MISSING_SPECIAL_CHAR": "Add a special character",
+            "STRONG_PASSWORD": "Strong password"
+        }
+    }
+}
