@@ -1,8 +1,15 @@
 ---
 import '@/styles/global.css';
+import { defaultLocale, isLocale, getI18n } from '@/i18n/config';
 import ModalLanguage from '@/components/ModalLanguage.astro';
 
-const { locale = "en", username, tab } = Astro.props;
+interface Props {
+	locale?: string;
+};
+
+const { locale = defaultLocale } = Astro.props;
+
+const t = await getI18n(locale);
 ---
 
 <!doctype html>
@@ -17,6 +24,10 @@ const { locale = "en", username, tab } = Astro.props;
 		<title>Astro Basics</title>
 	</head>
 	<body>
+
+		<a href="/sofiapalmer">View Profile {Astro.preferredLocale}</a>
+
+		<h2>Main: {t.about.title} locale: {locale}</h2>
 
 		<button type="button" class="p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-300 ease-in-out" data-modal-open="language-modal" aria-label="Abrir modal de cambio de idioma" aria-haspopup="dialog" aria-expanded="false" aria-controls="language-modal">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="26" height="26" class="stroke-blue-500">

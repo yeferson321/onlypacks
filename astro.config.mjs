@@ -11,7 +11,7 @@ export default defineConfig({
   devToolbar: { enabled: false },
   adapter: cloudflare(),
   i18n: {
-    locales: ["en", "es", "pt"],
+    locales: ["en", "es", "pt", "fr"],
     defaultLocale: "en",
     routing: {
       prefixDefaultLocale: false,

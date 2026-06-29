@@ -1,0 +1,22 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+
+export async function getStaticPaths() {
+    return [
+        { params: { locale: "en" } },
+        { params: { locale: "es" } },
+        // { params: { locale: "pt" } },
+        // { params: { locale: "fr" } },
+    ];
+}
+
+// export const prerender = false;
+
+const { locale } = Astro.params;
+
+console.log(Astro.preferredLocale, Astro.preferredLocaleList, Astro.currentLocale)
+---
+
+<MainLayout locale={locale}>
+	<h1>Current messages: {Astro.preferredLocale} locale</h1>
+</MainLayout>

@@ -1,28 +1,16 @@
 ---
-// export async function getStaticPaths() {
-//   	return [
-//   	  	// { params: { /* required */ }, props: { /* optional */ } },
-//   	  	{ params: { locale: 'es' } }, // [post] is the parameter
-//   	  	{ params: { locale: 'en' } }, // must match the file name
-//   	  	// ...
-//   	];
-// }
-
-// export function getI18n(locale: string) {
-//   	return import(`../../i18n/${locale}.json`);
-// }
-
-// const messages = await getI18n("es");
-
-export const prerender = false;
-
+import { localeCodes, isLocale, getLocaleHref } from '@/i18n/config';
 import MainLayout from '@/layouts/MainLayout.astro';
 
-const { locale, username, tab } = Astro.params;
+export async function getStaticPaths() {
+  	return localeCodes.map((locale) => ({
+  	  	params: { locale },
+  	}));
+};
 
-console.log(Astro.preferredLocale, Astro.preferredLocaleList, Astro.currentLocale)
+const { locale } = Astro.params;
+
+console.log("locale > index");
 ---
 
-<MainLayout locale={locale} username={username} tab={tab}>
-	<h1>Current messages: {Astro.preferredLocale} locale</h1>
-</MainLayout>
+<MainLayout locale={locale}/>

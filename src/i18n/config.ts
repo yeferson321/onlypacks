@@ -1,0 +1,42 @@
+import type en from "@/i18n/locales/en.json";
+
+export type Translation = typeof en;
+
+export const locales = [
+  	{ code: "en", language: "English" },
+  	{ code: "es", language: "Español" },
+  	{ code: "pt", language: "Português" },
+  	{ code: "fr", language: "Français" },
+  	{ code: "de", language: "Deutsch" },
+  	{ code: "ja", language: "日本語" },
+  	{ code: "ru", language: "Русский" },
+  	{ code: "hi", language: "हिन्दी" },
+  	{ code: "tr", language: "Türkçe" },
+  	{ code: "it", language: "Italiano" },
+  	{ code: "ar", language: "العربية" },
+  	{ code: "zh", language: "中文" },
+] as const;
+
+export const localeCodes = locales.map(({ code }) => code);
+
+export type LocaleCode = (typeof localeCodes)[number];
+
+export const defaultLocale: LocaleCode = "en";
+
+const translationModules = import.meta.glob<{ default: Translation }>("/src/i18n/locales/*.json");
+
+export const isLocale = (value: string): value is LocaleCode => {
+    return localeCodes.includes(value as LocaleCode);
+};
+
+export const getI18n = async (locale: LocaleCode): Promise<Translation> => {
+    const loader = translationModules[`/src/i18n/locales/${locale}.json`];
+
+    return (await loader()).default;
+};
+
+export const getLocaleHref = (locale: LocaleCode, url?: string) => {
+  	if (!url) return locale === defaultLocale ? "/" : `/${locale}`;
+
+  	return locale === defaultLocale ? `/${url}` : `/${locale}/${url}`;
+};

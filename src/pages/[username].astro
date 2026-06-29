@@ -1,22 +1,25 @@
 ---
 export const prerender = false;
 
+import { getLocaleHref } from '@/i18n/config';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 
-const pages = [
-    { username: 'sofiapalmer' },
-    { username: 'daniela' }
-];
+const { username } = Astro.params;
 
-const { username, tab } = Astro.params;
+const respuesta = await fetch(`http://192.168.1.21:4321/api/usuarios/${username}`);
 
-// console.log(locale, username);
+if (!respuesta.ok || respuesta.status === 404) {
+    return Astro.redirect("/404");
+}
 
-const page = pages.find((page) => page.username === username);
+const usuario = await respuesta.json();
 
-if (!page) return Astro.redirect("/404");
+// getLocaleHref(Astro.preferredLocale)
+console.log(usuario)
+
+// if (!usuario) return Astro.redirect("/404");
+
+console.log("[username]")
 ---
 
-<ProfileLayout username={username} tab={tab}>
-    
-</ProfileLayout>
+<ProfileLayout data={usuario}/>

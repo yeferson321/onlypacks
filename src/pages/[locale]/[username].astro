@@ -1,22 +1,19 @@
 ---
 export const prerender = false;
 
+import { localeCodes, isLocale, getLocaleHref } from '@/i18n/config';
+import data from '@/utils/data.json';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 
-const pages = [
-    { username: 'sofiapalmer' },
-    { username: 'daniela' }
-];
+const { locale, username } = Astro.params;
 
-const { locale, username, tab } = Astro.params;
+if (!isLocale(locale)) return Astro.redirect(getLocaleHref(Astro.preferredLocale, username));
 
-// console.log(locale, username);
+const datafetch = data.find((data) => data.username.toLocaleLowerCase() === username);
 
-const page = pages.find((page) => page.username === username);
+if (!datafetch) return Astro.redirect(getLocaleHref(Astro.preferredLocale));
 
-if (!page) return Astro.redirect("/404");
+console.log("locale > username");
 ---
 
-<ProfileLayout locale={locale} username={username} tab={tab}>
-
-</ProfileLayout>
+<ProfileLayout locale={locale} username={username}/>
