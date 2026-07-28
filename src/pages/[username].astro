@@ -4,20 +4,25 @@ export const prerender = false;
 import { actions } from 'astro:actions';
 import { resolveLocale, getI18n } from '@/i18n/config';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
+import users from '@/utils/data.json';
 
 const { username } = Astro.params;
 
-const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
+// const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
 
-console.log("error", error)
-if (error) return Astro.redirect("/404");
+// console.log("error", error)
+// if (error) return Astro.redirect("/404");
+
+ const user = users.find(
+                (user) => user.username.toLowerCase() === username.toLowerCase()
+            );
 
 const locale = resolveLocale(Astro.preferredLocale);
 
 const t = await getI18n(locale);
 ---
 
-<ProfileLayout translations={t} locale={locale} data={data}>
+<ProfileLayout translations={t} locale={locale} data={user}>
 
 </ProfileLayout>
 
