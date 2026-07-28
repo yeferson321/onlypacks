@@ -56,6 +56,7 @@
                             "TOO_LONG": "Debe tener al maximo 8 caracteres",
                             "MISSING_UPPERCASE": "Añade una letra mayúscula",
                             "MISSING_LOWERCASE": "Añade una letra minúscula",
+                            "MISSING_LETTER": "Añade texto en mayuscula o minuscula",
                             "MISSING_NUMBER": "Añade un número",
                             "MISSING_SPECIAL_CHAR": "Añade un carácter especial",
                             "STRONG_PASSWORD": "Contraseña fuerte"

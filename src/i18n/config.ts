@@ -10,16 +10,7 @@ export namespace Translation {
 export const locales = [
   	{ code: "en", language: "English" },
   	{ code: "es", language: "Español" },
-  	{ code: "pt", language: "Português" },
-  	{ code: "fr", language: "Français" },
-  	{ code: "de", language: "Deutsch" },
-  	{ code: "ja", language: "日本語" },
-  	{ code: "ru", language: "Русский" },
-  	{ code: "hi", language: "हिन्दी" },
-  	{ code: "tr", language: "Türkçe" },
-  	{ code: "it", language: "Italiano" },
-  	{ code: "ar", language: "العربية" },
-  	{ code: "zh", language: "中文" },
+
 ] as const;
 
 export const localeCodes = locales.map(({ code }) => code);
