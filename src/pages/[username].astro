@@ -6,7 +6,7 @@ import { resolveLocale, getI18n } from '@/i18n/config';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 import users from '@/utils/data.json';
 
-// const { username } = Astro.params;
+const { username } = Astro.params;
 
 // const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
 
@@ -14,7 +14,7 @@ import users from '@/utils/data.json';
 // if (error) return Astro.redirect("/404");
 
  const user = users.find(
-                (user) => user.username.toLowerCase() === "sofiapalmer"
+                (user) => user.username.toLowerCase() === username.toLowerCase()
             );
 
 const locale = resolveLocale(Astro.preferredLocale);
