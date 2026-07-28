@@ -1,6 +1,6 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-07-28",
+	"compatibility_date": "2026-06-10",
 	"compatibility_flags": ["global_fetch_strictly_public"],
 	"name": "short-star",
 	"main": "@astrojs/cloudflare/entrypoints/server",
