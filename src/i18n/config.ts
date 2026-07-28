@@ -2,6 +2,11 @@ import type en from "@/i18n/locales/en.json";
 
 export type Translation = typeof en;
 
+export namespace Translation {
+    export type LoginModal = Translation["loginModal"];
+    export type RegisterForm = Translation["loginModal"]["form"]["register"];
+}
+
 export const locales = [
   	{ code: "en", language: "English" },
   	{ code: "es", language: "Español" },
@@ -21,7 +26,7 @@ export const localeCodes = locales.map(({ code }) => code);
 
 export type LocaleCode = (typeof localeCodes)[number];
 
-export const defaultLocale: LocaleCode = "en";
+const defaultLocale: LocaleCode = "en";
 
 const translationModules = import.meta.glob<{ default: Translation }>("/src/i18n/locales/*.json");
 
@@ -29,14 +34,20 @@ export const isLocale = (value: string): value is LocaleCode => {
     return localeCodes.includes(value as LocaleCode);
 };
 
-export const getI18n = async (locale: LocaleCode): Promise<Translation> => {
-    const loader = translationModules[`/src/i18n/locales/${locale}.json`];
+export const resolveLocale = (locale?: string): LocaleCode => {
+	if (!locale || !isLocale(locale)) return defaultLocale;
 
-    return (await loader()).default;
+    return locale;
 };
 
 export const getLocaleHref = (locale: LocaleCode, url?: string) => {
   	if (!url) return locale === defaultLocale ? "/" : `/${locale}`;
 
   	return locale === defaultLocale ? `/${url}` : `/${locale}/${url}`;
+};
+
+export const getI18n = async (locale: LocaleCode): Promise<Translation> => {
+    const loader = translationModules[`/src/i18n/locales/${locale}.json`];
+
+    return (await loader()).default;
 };

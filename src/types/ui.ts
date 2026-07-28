@@ -23,6 +23,12 @@ export type ImageData = {
   	avgColor: RGB;
 };
 
+export type PostData = {
+  	blurredUrl: string;
+  	fullUrl: string;
+  	likes?: number;
+};
+
 export type Profile = {
 	activeSubscription: boolean;
 	name: string;
@@ -32,7 +38,5 @@ export type Profile = {
 	socialLinks: SocialLink[];
 	presentation: string;
 	stories: ImageData[];
-
-	/* profileImage: string;
-	coverImage: string; */
+	posts: PostData[];
 };

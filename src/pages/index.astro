@@ -1,7 +1,58 @@
 ---
+import { resolveLocale, getI18n } from '@/i18n/config';
 import MainLayout from '@/layouts/MainLayout.astro';
 
-console.log("index", Astro.preferredLocale);
+const locale = resolveLocale(Astro.preferredLocale);
+
+const t = await getI18n(locale);
 ---
 
-<MainLayout/>
+<MainLayout translations={t} locale={locale}>
+
+</MainLayout>
+
+<script>
+
+// 	import { actions } from "astro:actions";
+
+// const { data, error } = await actions.getUserByUsername({
+//   username: "Daniela",
+// });
+
+// if (error) {
+//   console.error(error);
+// } else {
+//   console.log(data);
+// }
+// 	  import { actions } from "astro:actions";
+
+//   async function run() {
+//     const { data, error } = await actions.greet({
+//       name: "Juan",
+//     });
+
+//     if (error) {
+//       console.error(error);
+//       return;
+//     }
+
+//     console.log(data.message);
+//   }
+
+//   run();
+// 	const username = "sofiapalmer"
+
+// import { actions } from "astro:actions";
+
+// const { data } = await actions.getUserByUsername({
+//   username: "sofiapalmer",
+// });
+
+// console.log(data)
+
+// if (!data) {
+//   console.log("Usuario no encontrado");
+// } else {
+//   console.log(data.name);
+// }
+</script>

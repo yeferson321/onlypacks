@@ -1,17 +1,19 @@
 ---
 import '@/styles/global.css';
 import type { Profile } from '@/types/ui';
-import { defaultLocale, getI18n } from '@/i18n/config';
+import type { Translation, LocaleCode } from '@/i18n/config';
+
 import ModalLanguage from '@/components/ModalLanguage.astro';
+import LoginModal from '@/components/LoginModal.astro';
+import IconHeart from '@/icons/outline/IconHeart.svg';
 
 interface Props {
-	locale?: string;
+	translations: Translation;
+	locale: LocaleCode;
 	data: Profile;
 };
 
-const { locale = defaultLocale, data } = Astro.props;
-
-const t = await getI18n(locale);
+const { translations, locale, data } = Astro.props;
 ---
 
 <!doctype html>
@@ -27,7 +29,10 @@ const t = await getI18n(locale);
 	</head>
 	<body>
 
-		<h2>Profile: {t.about.title} locale: {locale}</h2>
+		<h2>Profile: {translations.about.title} locale: {locale}</h2>
+		<h3>username: {data.username}</h3>
+		<p>name: {data.name}</p>
+		<p>isVerified {data.isVerified}</p>
 
 		<button type="button" class="p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-300 ease-in-out" data-modal-open="language-modal" aria-label="Abrir modal de cambio de idioma" aria-haspopup="dialog" aria-expanded="false" aria-controls="language-modal">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="26" height="26" class="stroke-blue-500">
@@ -37,7 +42,37 @@ const t = await getI18n(locale);
 
 		<ModalLanguage url={data.username.toLocaleLowerCase()}/>
 
-		<!-- <Profile profile={data} />
+		<button type="button" class="p-2.5 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-300 ease-in-out" data-modal-open="login-modal" aria-label="Abrir modal de inicio de sesión" aria-haspopup="dialog" aria-expanded="false" aria-controls="login-modal">
+			<IconHeart stroke-width="2" width="26" height="26" class="stroke-blue-500"/>
+		</button>
+
+		<LoginModal translations={translations.loginModal}/>
+
+		<main class="scroll-container">
+			<slot />
+		</main>
+
+	</body>
+</html>
+
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Righteous&display=swap');
+
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+
+		font-family: "Figtree", sans-serif;
+  		font-optical-sizing: auto;
+  		font-weight: 400;
+  		font-style: normal;
+	}
+</style>
+
+
+<!-- <Profile profile={data} />
 		 -->
 		<!-- <ProfileTabs username={username} tab={tab}/> -->
 
@@ -116,26 +151,3 @@ const t = await getI18n(locale);
 			
     		</div> -->
 		
-
-		<main class="scroll-container">
-			<slot />
-		</main>
-
-	</body>
-</html>
-
-<style>
-	@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=Righteous&display=swap');
-
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-
-		font-family: "Figtree", sans-serif;
-  		font-optical-sizing: auto;
-  		font-weight: 400;
-  		font-style: normal;
-	}
-</style>

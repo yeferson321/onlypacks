@@ -1,5 +1,5 @@
 ---
-import { localeCodes, isLocale, getLocaleHref } from '@/i18n/config';
+import { localeCodes, getI18n } from '@/i18n/config';
 import MainLayout from '@/layouts/MainLayout.astro';
 
 export async function getStaticPaths() {
@@ -10,7 +10,9 @@ export async function getStaticPaths() {
 
 const { locale } = Astro.params;
 
-console.log("locale > index");
+const t = await getI18n(locale);
 ---
 
-<MainLayout locale={locale}/>
+<MainLayout translations={t} locale={locale}>
+
+</MainLayout>

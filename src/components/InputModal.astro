@@ -1,0 +1,190 @@
+---
+import type { Translation } from '@/i18n/config';
+import FormField from '@/components/common/FormField/FormField.astro';
+import IconToggle from '@/components/common/IconToggle.astro';
+import IconEye from '@/icons/outline/IconEye.svg';
+import IconEyeSlash from '@/icons/outline/IconEyeSlash.svg';
+
+interface Props {
+	translations: Translation.RegisterForm;
+};
+
+const { translations } = Astro.props;
+---
+
+<form class="mt-6"> 
+
+	<div class="space-y-4">
+
+		<FormField>
+
+            <div class="relative">
+                        
+                <input type="text" name="name" class="field-input peer block w-full py-3 px-4 border rounded-2xl border-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="name" minlength={6} maxlength={120} data-field-input placeholder=" " required={true}>
+
+                <label class="field-label absolute left-3 px-1 pointer-events-none duration-300 top-0 -translate-y-1/2 text-sm text-neutral-600 bg-white
+                    peer-placeholder-shown:top-1/2
+                    peer-placeholder-shown:-translate-y-1/2
+                    peer-placeholder-shown:text-base
+
+                    peer-placeholder-shown:bg-transparent
+                    peer-focus:top-0
+                    peer-focus:-translate-y-1/2
+                    peer-focus:text-sm
+                    peer-focus:text-blue-500
+                    peer-focus:bg-white">
+                    {translations.fields.name.label}
+                </label>
+                        
+            </div>
+        
+            <div class="field-feedback mt-0.5 mx-4 text-center text-sm" data-field-feedback aria-live="polite" data-messages={JSON.stringify(translations.fields.name.validation)}></div>
+            
+        </FormField>
+
+        <FormField>
+            
+            <div class="relative">
+
+                <input type="password" name="newPassword" class="field-input peer block w-full py-3 px-4 border rounded-2xl border-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="new-password" minlength={8} maxlength={64} data-field-input placeholder=" " required={false}>
+
+                <label class="field-label absolute left-3 px-1 pointer-events-none duration-300 top-0 -translate-y-1/2 text-sm text-neutral-600 bg-white
+                    peer-placeholder-shown:top-1/2
+                    peer-placeholder-shown:-translate-y-1/2
+                    peer-placeholder-shown:text-base
+                    
+                    peer-placeholder-shown:bg-transparent
+                    peer-focus:top-0
+                    peer-focus:-translate-y-1/2
+                    peer-focus:text-sm
+                    peer-focus:text-blue-500
+                    peer-focus:bg-white">
+                    {translations.fields.newPassword.label}
+                </label>
+
+                <IconToggle class="absolute right-4 top-1/2 -translate-y-1/2" data-toggle="password" ariaLabelActive={translations.fields.newPassword.ariaLabel.hidePassword} ariaLabelInactive={translations.fields.newPassword.ariaLabel.showPassword}>
+
+                    <IconEye stroke-width="1.6" width="20" height="20" class="stroke-neutral-600 hidden" data-icon-active/>
+
+                    <IconEyeSlash stroke-width="1.6" width="20" height="20" class="stroke-neutral-600" data-icon-inactive/>
+
+                </IconToggle>
+
+            </div>
+
+            <div class="field-feedback mt-0.5 mx-4 text-center text-sm" data-field-feedback aria-live="polite" data-messages={JSON.stringify(translations.fields.newPassword.validation)}></div>
+
+            <div class="mt-2 mx-4">
+                <div class="w-full h-1 rounded-full bg-neutral-200">
+                    <div class="field-strength-bar w-1/4 h-1 rounded-full bg-emerald-500"></div>
+                </div>
+            </div>
+            
+        </FormField>
+
+		<!-- <Input type="email" autocomplete="email" labelText="Tu correo electrónico" minLength={6} maxLength={245} required={true}/>  -->  
+		<!-- <Input type="password" autocomplete="new-password" labelText="Tu contraseña" required={true} errorMessages={messages.newPassword}/>  -->
+	
+    </div>
+
+
+	<button type="submit" class="mt-6 w-full p-2 rounded-3xl text-center text-lg font-medium text-white bg-blue-500">{translations.actions.submit}</button>
+        			    
+</form>
+
+
+<script>
+    import { actions } from "astro:actions";
+
+    type RegisterForm = {
+        name: string;
+        newPassword: string;
+    };
+
+    const form = document.querySelector('form');
+
+    form?.addEventListener('submit', async (event) => {
+
+        event.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries()) as RegisterForm;
+
+        console.log("formData", data);
+
+        const result = await actions.register(data);
+
+        if (result.error) {
+            console.error(result.error);
+            return;
+        }
+
+        console.log(result.data);
+
+            // async function login() {
+    //     const { data, error } = await actions.getUserByUsername({
+    //         username: "sofiapalmer"
+    //     });
+      
+    //     if (error) {
+    //         console.error(error);
+    //         return;
+    //     }
+      
+    //     console.log(data);
+    // }
+
+    // login();
+
+    })
+
+
+</script>
+
+
+
+<style>
+:global(.form-field[data-state="invalid"]) .field-input {
+    border-color: oklch(64.6% 0.222 41.116);
+}
+
+:global(.form-field[data-state="valid"]) .field-input {
+    border-color: oklch(50.8% 0.118 165.612);
+}
+
+
+
+:global(.form-field[data-state="invalid"]) .field-label {
+    color: oklch(64.6% 0.222 41.116);
+}
+
+:global(.form-field[data-state="valid"]) .field-label {
+    color: oklch(50.8% 0.118 165.612);
+}
+
+
+:global(.form-field[data-state="invalid"]) .field-feedback {
+    color: oklch(64.6% 0.222 41.116);
+}
+
+
+.field-strength-bar {
+    transition: 
+        width var(--transition-duration, 300ms) var(--transition-timing, ease-in-out), 
+        background-color var(--transition-duration, 300ms) var(--transition-timing, ease-in-out);
+}
+
+:global(.form-field[data-strength="weak"]) .field-strength-bar {
+    width: 25%;
+    background-color: oklch(69.6% 0.17 162.48);
+}
+
+:global(.form-field[data-strength="medium"]) .field-strength-bar {
+    width: 60%;
+    background-color: oklch(59.6% 0.145 163.225);
+}
+
+:global(.form-field[data-strength="strong"]) .field-strength-bar {
+    width: 100%;
+    background-color: oklch(50.8% 0.118 165.612);
+}
+</style>

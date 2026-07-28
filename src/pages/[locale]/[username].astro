@@ -1,19 +1,39 @@
 ---
 export const prerender = false;
 
-import { localeCodes, isLocale, getLocaleHref } from '@/i18n/config';
-import data from '@/utils/data.json';
+import { actions } from 'astro:actions';
+import { resolveLocale, getLocaleHref, getI18n } from '@/i18n/config';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 
 const { locale, username } = Astro.params;
 
-if (!isLocale(locale)) return Astro.redirect(getLocaleHref(Astro.preferredLocale, username));
+const routeLocale = resolveLocale(locale);
+if (routeLocale !== locale) return Astro.redirect(getLocaleHref(routeLocale, username));
 
-const datafetch = data.find((data) => data.username.toLocaleLowerCase() === username);
+const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
 
-if (!datafetch) return Astro.redirect(getLocaleHref(Astro.preferredLocale));
+if (error) return Astro.redirect("/404");
 
-console.log("locale > username");
+const t = await getI18n(locale);
 ---
 
-<ProfileLayout locale={locale} username={username}/>
+<ProfileLayout translations={t} locale={locale} data={data}>
+
+</ProfileLayout>
+
+<script>
+// if (!isLocale(locale)) return Astro.redirect(getLocaleHref(Astro.preferredLocale, username));
+
+// const local = resolveLocale(Astro.preferredLocale);
+
+// const respuesta = await fetch(`http://192.168.1.21:4321/api/usuarios/${username}`);
+
+// if (!respuesta.ok || respuesta.status === 404) return Astro.redirect("/404");
+
+// const usuario = await respuesta.json();
+
+// getLocaleHref(Astro.preferredLocale)
+// console.log(usuario)
+
+// if (!usuario) return Astro.redirect("/404");
+</script>

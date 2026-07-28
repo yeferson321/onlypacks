@@ -1,49 +1,72 @@
 {
     "about": {
-        "title": "Sobre nosotros"
+        "title": "About us"
     },
 
-    "messages": {
-        "name": {
-            "REQUIRED": "El nombre es obligatorio",
-            "TOO_SHORT": "El nombre es demasiado corto",
-            "TOO_LONG": "El nombre es demasiado largo",
-            "INVALID_CHARS": "Solo se permiten letras, espacios, apóstrofes y guiones",
-            "SPACES": "No se permiten espacios consecutivos",
-            "INVALID": "Introduce un nombre válido"
+    "loginModal": {
+        "title": "Create your Wise account",
+        "subtitle": {
+            "text": "¿Ya tienes una cuenta?",
+            "action": "Inicia sesión"
         },
-      
-        "username": {
-            "REQUIRED": "El nombre de usuario es obligatorio",
-            "TOO_SHORT": "El nombre de usuario es demasiado corto",
-            "TOO_LONG": "El nombre de usuario es demasiado largo",
-            "INVALID_CHARS": "Solo se permiten letras, números, puntos y guion bajo",
-            "NO_SPACES": "No se permiten espacios",
-            "CONSECUTIVE_DOTS": "No se permiten puntos consecutivos",
-            "INVALID_DOTS_POSITION": "El punto no puede ir al inicio o al final",
-            "INVALID": "Introduce un nombre de usuario válido"
+        "social": {
+            "title": "También puedes usar",
+            "google": {
+                "ariaLabel": "Iniciar sesión con Google"
+            },
+            "apple": {
+                "ariaLabel": "Iniciar sesión con Apple"
+            }
         },
-      
-        "email": {
-            "REQUIRED": "El correo es obligatorio",
-            "TOO_SHORT": "El correo es demasiado corto",
-            "TOO_LONG": "El correo es demasiado largo",
-            "MISSING_AT": "Falta el símbolo @",
-            "MISSING_LOCAL_PART": "Introduce texto antes del @",
-            "MISSING_DOMAIN": "Introduce dominio después del @",
-            "INVALID": "Correo inválido"
+        "terms": {
+            "text": "Al registrarte, aceptas nuestras",
+            "termsOfUse": "Condiciones de Uso",
+            "privacyPolicy": "Política de Privacidad"
         },
-      
-        "new-password": {
-            "REQUIRED": "La contraseña es obligatoria",
-            "NO_SPACES": "No puede contener espacios",
-            "TOO_SHORT": "Debe tener al menos 8 caracteres",
-            "TOO_LONG": "Debe tener al maximo 8 caracteres",
-            "MISSING_UPPERCASE": "Añade una letra mayúscula",
-            "MISSING_LOWERCASE": "Añade una letra minúscula",
-            "MISSING_NUMBER": "Añade un número",
-            "MISSING_SPECIAL_CHAR": "Añade un carácter especial",
-            "STRONG_PASSWORD": "Contraseña fuerte"
+        "close": {
+            "ariaLabel": "Cerrar modal"
+        },
+
+        "form": {
+            "register": {
+                "fields": {
+                    "name": {
+                        "label": "Tu nombre de usuario",
+
+                        "validation": {
+                            "REQUIRED": "El nombre es obligatorio",
+                            "TOO_SHORT": "El nombre es demasiado corto",
+                            "TOO_LONG": "El nombre es demasiado largo",
+                            "INVALID_CHARS": "Solo se permiten letras, espacios, apóstrofes y guiones",
+                            "SPACES": "No se permiten espacios consecutivos",
+                            "INVALID": "Introduce un nombre válido"
+                        }
+                    },
+
+                    "newPassword": {
+                        "label": "Tu contraseña",
+                        "ariaLabel": {
+                            "showPassword": "Ocultar contraseña",
+                            "hidePassword": "Mostrar contraseña"
+                        },
+                        "validation": {
+                            "REQUIRED": "La contraseña es obligatoria",
+                            "NO_SPACES": "No puede contener espacios",
+                            "TOO_SHORT": "Debe tener al menos 8 caracteres",
+                            "TOO_LONG": "Debe tener al maximo 8 caracteres",
+                            "MISSING_UPPERCASE": "Añade una letra mayúscula",
+                            "MISSING_LOWERCASE": "Añade una letra minúscula",
+                            "MISSING_NUMBER": "Añade un número",
+                            "MISSING_SPECIAL_CHAR": "Añade un carácter especial",
+                            "STRONG_PASSWORD": "Contraseña fuerte"
+                        }
+                    }
+                },
+
+                "actions": {
+                    "submit": "Inscribirse"
+                }
+            }
         }
     }
 }

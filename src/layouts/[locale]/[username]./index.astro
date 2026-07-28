@@ -10,6 +10,11 @@ const pages = [
 
 const { locale, username, tab } = Astro.params;
 
+
+// const searchQuery = Astro.url.searchParams.get('search');
+
+// console.log("searchQuery", searchQuery);
+
 // console.log(locale, username);
 
 const page = pages.find((page) => page.username === username);
