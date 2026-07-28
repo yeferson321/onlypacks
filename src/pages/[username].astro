@@ -7,8 +7,6 @@ import { resolveLocale, getI18n } from '@/i18n/config';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 
 const { username } = Astro.params;
-
-
 // const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
 
 const { data, error } = await supabase.from('profiles').select(`*, social_links (*), stories (*), posts (*)`).ilike('username', username).single();
