@@ -22,6 +22,10 @@ const locale = resolveLocale(Astro.preferredLocale);
 const t = await getI18n(locale);
 ---
 
+<ProfileLayout translations={t} locale={locale} data={user}>
+
+</ProfileLayout>
+
 <script>
     // import { actions } from "astro:actions";
 
