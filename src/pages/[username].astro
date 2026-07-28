@@ -1,15 +1,17 @@
 ---
 export const prerender = false;
 
-import { actions } from 'astro:actions';
+// import { actions } from 'astro:actions';
+import { supabase } from '@/lib/supabase';
 import { resolveLocale, getI18n } from '@/i18n/config';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 
 const { username } = Astro.params;
 
-const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
+// const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
 
-console.log("error", error)
+const { data, error } = await supabase.from('profiles').select(`*, social_links (*), stories (*), posts (*)`).ilike('username', username).single();
+
 if (error) return Astro.redirect("/404");
 
 const locale = resolveLocale(Astro.preferredLocale);
@@ -70,3 +72,63 @@ const t = await getI18n(locale);
                     "INVALID": "Correo inválido"
                 }, */
 </script>
+
+
+
+
+<!-- console.log('Key usada:', import.meta.env.SUPABASE_KEY?.slice(0, 15));
+
+const supabase = createClient(
+    import.meta.env.SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY // solo local, nunca en el cliente
+);
+
+const profiles = users;
+
+for (const p of profiles) {
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .insert({
+      username: p.username,
+      name: p.name,
+      is_verified: p.isVerified,
+      active_subscription: p.activeSubscription,
+      presentation: p.presentation,
+      stats_images: p.stats.images,
+      stats_videos: p.stats.videos,
+      stats_audios: p.stats.audios,
+      stats_likes: p.stats.likes,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error(`Error creando ${p.username}:`, error.message);
+    continue;
+  }
+
+  await supabase.from('social_links').insert(
+    p.socialLinks.map(s => ({ profile_id: profile.id, platform: s.platform, url: s.url }))
+  );
+
+  await supabase.from('stories').insert(
+    p.stories.map(s => ({
+      profile_id: profile.id,
+      url: s.url,
+      color_r: s.avgColor.r,
+      color_g: s.avgColor.g,
+      color_b: s.avgColor.b,
+    }))
+  );
+
+  await supabase.from('posts').insert(
+    p.posts.map(post => ({
+      profile_id: profile.id,
+      blurred_url: post.blurredUrl,
+      full_url: post.fullUrl,
+      likes: post.likes,
+    }))
+  );
+
+  console.log(`✔ ${p.username} cargado`);
+} -->

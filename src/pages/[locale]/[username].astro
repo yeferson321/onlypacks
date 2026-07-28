@@ -1,8 +1,9 @@
 ---
 export const prerender = false;
 
-import { actions } from 'astro:actions';
+// import { actions } from 'astro:actions';
 import { resolveLocale, getLocaleHref, getI18n } from '@/i18n/config';
+import { supabase } from '@/lib/supabase';
 import ProfileLayout from '@/layouts/ProfileLayout.astro';
 
 const { locale, username } = Astro.params;
@@ -10,7 +11,8 @@ const { locale, username } = Astro.params;
 const routeLocale = resolveLocale(locale);
 if (routeLocale !== locale) return Astro.redirect(getLocaleHref(routeLocale, username));
 
-const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
+// const { data, error } = await Astro.callAction(actions.getUserByUsername, { username: username });
+const { data, error } = await supabase.from('profiles').select(`*, social_links (*), stories (*), posts (*)`).ilike('username', username).single();
 
 if (error) return Astro.redirect("/404");
 

@@ -94,8 +94,7 @@ const { translations } = Astro.props;
 
 
 <script>
-    import { actions } from "astro:actions";
-
+  
     type RegisterForm = {
         name: string;
         newPassword: string;
@@ -111,35 +110,32 @@ const { translations } = Astro.props;
 
         console.log("formData", data);
 
-        const result = await actions.register(data);
+    })
+</script>
+
+
+        <!-- const result = await actions.register(data);
 
         if (result.error) {
             console.error(result.error);
             return;
         }
 
-        console.log(result.data);
+                console.log(result.data);
 
-            // async function login() {
-    //     const { data, error } = await actions.getUserByUsername({
-    //         username: "sofiapalmer"
-    //     });
-      
-    //     if (error) {
-    //         console.error(error);
-    //         return;
-    //     }
-      
-    //     console.log(data);
-    // }
+            // async function login() { -->
+         <!-- const { data, error } = await actions.getUserByUsername({
+             username: "sofiapalmer"
+         });
 
-    // login();
+         if (error) {
+             console.error(error);
+             return;
+         }
 
-    })
-
-
-</script>
-
+         console.log(data);
+     
+     login(); -->
 
 
 <style>
