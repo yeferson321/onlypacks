@@ -2,6 +2,7 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro/zod";
 import PBKDF2Lite from "pbkdf2-lite";
 import { supabase } from '@/lib/supabase';
+import { ENV } from "@/lib/env";
 
 const hasher = new PBKDF2Lite();
 
@@ -37,13 +38,13 @@ export const register = defineAction({
             maxAge: 3600,      // 1 hora, en segundos
             path: '/',
             httpOnly: true,
-            secure: true,
+            secure: ENV.PROD,
             sameSite: 'lax',
         });
 
         const cookie = context.cookies.get('sesion_id');
 
-        console.log("hola", cookie)
+        console.log("hola", cookie, ENV.PROD)
 
         return {
             data: cookie?.value,
