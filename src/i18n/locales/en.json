@@ -4,10 +4,19 @@
     },
 
     "loginModal": {
-        "title": "Create your Wise account",
+        "title": {
+            "login": "Inicia sesion en Wise",
+            "register": "Crea tu cuenta en Wise"
+        },
         "subtitle": {
-            "text": "¿Ya tienes una cuenta?",
-            "action": "Inicia sesión"
+            "login": {
+                "text": "¿Ya tienes una cuenta?",
+                "action": "Inicia sesión"
+            },
+            "register": {
+                "text": "¿Aun no tienes una cuenta?",
+                "action": "Crea una cuenta"
+            }
         },
         "social": {
             "title": "También puedes usar",
@@ -28,10 +37,57 @@
         },
 
         "form": {
+            "login": {
+                "fields": {
+                    "email": {
+                        "label": "Tu correo o usuario",
+
+                        "validation": {
+                            "REQUIRED": "El nombre es obligatorio",
+                            "TOO_SHORT": "El nombre es demasiado corto",
+                            "TOO_LONG": "El nombre es demasiado largo",
+                            "INVALID_CHARS": "Solo se permiten letras, espacios, apóstrofes y guiones",
+                            "SPACES": "No se permiten espacios consecutivos",
+                            "INVALID": "Introduce un nombre válido"
+                        }
+                    },
+                    "password": {
+                        "label": "Tu contraseña",
+                        "ariaLabel": {
+                            "showPassword": "Ocultar contraseña",
+                            "hidePassword": "Mostrar contraseña"
+                        },
+                        "validation": {
+                            "REQUIRED": "La contraseña es obligatoria",
+                            "NO_SPACES": "No puede contener espacios",
+                            "TOO_SHORT": "Debe tener al menos 8 caracteres",
+                            "TOO_LONG": "Debe tener al maximo 8 caracteres"
+                        }
+                    }
+                },
+
+                "actions": {
+                    "submit": "Inscribirse"
+                }
+            },
+            
             "register": {
                 "fields": {
                     "name": {
                         "label": "Tu nombre de usuario",
+
+                        "validation": {
+                            "REQUIRED": "El nombre es obligatorio",
+                            "TOO_SHORT": "El nombre es demasiado corto",
+                            "TOO_LONG": "El nombre es demasiado largo",
+                            "INVALID_CHARS": "Solo se permiten letras, espacios, apóstrofes y guiones",
+                            "SPACES": "No se permiten espacios consecutivos",
+                            "INVALID": "Introduce un nombre válido"
+                        }
+                    },
+
+                    "email": {
+                        "label": "Tu correo",
 
                         "validation": {
                             "REQUIRED": "El nombre es obligatorio",

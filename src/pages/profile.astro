@@ -1,0 +1,14 @@
+---
+import { resolveLocale, getI18n } from '@/i18n/config';
+import MainLayout from '@/layouts/MainLayout.astro';
+
+const locale = resolveLocale(Astro.preferredLocale);
+
+const t = await getI18n(locale);
+---
+
+<MainLayout translations={t} locale={locale}>
+
+    <h2 class="text-2xl font-medium text-neutral-800">Profile</h2>
+
+</MainLayout>

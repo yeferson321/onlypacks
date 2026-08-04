@@ -72,7 +72,24 @@ const normalize = (value: string) => value.normalize("NFC").trim();
 //     return null;
 // };
 
+export const validatePassword = ({ value, properties, validity }: ValidationContext): ValidationResult<PasswordCode> => {
+    const password = normalize(value);
 
+    if (!password) {
+        return properties.required
+            ? makeResult({ code: "REQUIRED", state: "invalid", strength: "weak" })
+            : makeResult({ code: "", state: "", strength: "" });
+    }
+
+    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength: "weak" });
+
+    if (password.length < properties.minLength) return makeResult({ code: "TOO_SHORT", state: "invalid", strength: "medium" });
+    if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength: "medium" });
+
+    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength: "weak" });
+
+    return makeResult({ code: "", state: "valid", strength: "strong" });
+};
 
 export const validateNewPassword = ({ value, properties, validity }: ValidationContext): ValidationResult<PasswordCode> => {
     const password = normalize(value);
@@ -140,11 +157,13 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
 
 export const validators: Record<string, Validator> = {
     // "text:name": validateName,
-    "password:new-password": validateNewPassword,
     // "email:email": validateEmail,
+    "password:password": validatePassword,
+    "password:new-password": validateNewPassword,
     
     // agrega aquí nuevas entradas: "type:autocomplete": validateFn
 };
+
 // export const validators: Record<string, Validator> = {
 //     "text:name": validateName,
 //     "text:username": validateUserName,

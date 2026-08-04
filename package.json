@@ -18,7 +18,11 @@
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^7.1.0",
     "hash-wasm": "^4.12.0",
+    "pbkdf2-lite": "^0.1.1",
     "tailwindcss": "^4.2.2",
     "wrangler": "^4.115.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2"
   }
 }

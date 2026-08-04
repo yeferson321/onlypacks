@@ -1,7 +1,7 @@
 ---
 import type { Translation } from '@/i18n/config';
 import Modal from '@/components/common/Modal.astro';
-import InputModal from '@/components/InputModal.astro';
+import InputModal from './InputModal.astro';
 import IconXmark from '@/icons/outline/IconXmark.svg';
 import IconGoogle from '@/icons/brands/colored/IconGoogle.svg';
 import IconApple from '@/icons/brands/colored/IconApple.svg';
@@ -17,9 +17,9 @@ const { translations } = Astro.props;
 					
     <div class="px-8 pt-12 pb-8 sm:my-8 sm:w-full sm:max-w-lg rounded-3xl border border-neutral-200/70 bg-white">
 						
-		<h2 id="login-modal-title" class="text-center text-2xl font-medium text-neutral-800">{translations.title}</h2>
+		<h2 id="login-modal-title" class="text-center text-2xl font-medium text-neutral-800">{translations.title.register}</h2>
 
-		<p class="mt-2 text-center text-base text-neutral-800">{translations.subtitle.text} <a class="underline font-medium">{translations.subtitle.action}</a></p>
+		<p class="mt-2 text-center text-base text-neutral-800">{translations.subtitle.register.text} <a class="underline font-medium">{translations.subtitle.register.action}</a></p>
 
 		<InputModal translations={translations.form.register}/>
         

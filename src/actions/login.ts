@@ -7,51 +7,38 @@ const hasher = new PBKDF2Lite();
 
 const normalize = (value: string) => value.normalize("NFC");
 
-export const register = defineAction({
+export const login = defineAction({
     input: z.object({
-        name: z.string().min(6).max(64),
         email: z.string().min(6).max(64),
-        newPassword: z.string().min(8).max(64),
+        password: z.string().min(8).max(64),
     }),
 
-    handler: async ({ name, email, newPassword }, context) => {
-        const account = {
-            name: normalize(name),
-            email: normalize(email),
-            password_hash: await hasher.hash(normalize(newPassword)),
-        };
+    handler: async ({ email, password }) => {
+        const normalizedEmail = normalize(email);
+        const normalizedPassword = normalize(password);
 
-        // const { data, error } = await supabase.from('accounts').insert(account)
+        const { data, error } = await supabase.from('accounts').select('*').eq('email', normalizedEmail).maybeSingle();
 
-        // if (error) {
-        //     if (error.code === '23505') { // violación de unique en Postgres
-        //         throw new ActionError({ code: 'CONFLICT', message: 'Ese correo ya está registrado' });
-        //     }
+        if (error) {
+            throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'No se pudo procesar el inicio de sesión, intenta de nuevo' });
+        }
 
-        //     throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'No se pudo completar el registro' });
-        // }
+        const valid = data && await hasher.verify(data.password_hash, normalizedPassword);
 
-        // const sesionId = crypto.randomUUID();
+        console.log("account", data, valid)
 
-        // const hola = context.cookies.set('sesion_id', sesionId, {
-        //     maxAge: 3600,      // 1 hora, en segundos
-        //     path: '/',
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'lax',
-        // });
-
-        const cookie = context.cookies.get('sesion_id');
-
-
-        console.log("hola", cookie)
+        if (!valid) {
+            throw new ActionError({
+                code: 'UNAUTHORIZED',
+                message: 'Correo o contraseña incorrectos',
+            });
+        }
 
         return {
-            data: cookie,
             success: true,
         };
     }
-})
+});
 
 
 // import { argon2id, argon2Verify } from "hash-wasm";
