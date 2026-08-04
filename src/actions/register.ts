@@ -33,7 +33,7 @@ export const register = defineAction({
 
         const sesionId = crypto.randomUUID();
 
-        const hola = context.cookies.set('sesion_id', sesionId, {
+        context.cookies.set('sesion_id', sesionId, {
             maxAge: 3600,      // 1 hora, en segundos
             path: '/',
             httpOnly: true,
@@ -46,7 +46,7 @@ export const register = defineAction({
         console.log("hola", cookie)
 
         return {
-            data: cookie,
+            data: cookie?.value,
             success: true,
         };
     }
