@@ -31,18 +31,17 @@ export const register = defineAction({
         //     throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'No se pudo completar el registro' });
         // }
 
-        // const sesionId = crypto.randomUUID();
+        const sesionId = crypto.randomUUID();
 
-        // const hola = context.cookies.set('sesion_id', sesionId, {
-        //     maxAge: 3600,      // 1 hora, en segundos
-        //     path: '/',
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'lax',
-        // });
+        const hola = context.cookies.set('sesion_id', sesionId, {
+            maxAge: 3600,      // 1 hora, en segundos
+            path: '/',
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+        });
 
         const cookie = context.cookies.get('sesion_id');
-
 
         console.log("hola", cookie)
 
