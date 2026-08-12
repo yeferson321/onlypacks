@@ -1,7 +1,7 @@
 ---
 import type { Translation } from '@/i18n/config';
 import Modal from '@/components/common/Modal.astro';
-import InputModal from './InputModal.astro';
+import SignInForm from './SignInForm.astro';
 import IconXmark from '@/icons/outline/IconXmark.svg';
 import IconGoogle from '@/icons/brands/colored/IconGoogle.svg';
 import IconApple from '@/icons/brands/colored/IconApple.svg';
@@ -21,7 +21,7 @@ const { translations } = Astro.props;
 
 		<p class="mt-2 text-center text-base text-neutral-800">{translations.subtitle.login.text} <a class="underline font-medium">{translations.subtitle.login.action}</a></p>
 
-		<InputModal translations={translations.form.login}/>
+		<SignInForm translations={translations.form.login}/>
         
 		<p class="mt-6 text-center text-base text-neutral-800">{translations.social.title}</p>
 					

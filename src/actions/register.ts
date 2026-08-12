@@ -47,7 +47,6 @@ export const register = defineAction({
         console.log("hola", cookie, ENV.PROD)
 
         return {
-            data: cookie?.value,
             success: true,
         };
     }
