@@ -19,11 +19,17 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
     const properties = { minLength, maxLength, required };
     const validator = validators[`${type}:${autocomplete}`];
 
+    if (!validator) {
+        console.warn(`No hay validador registrado para "${type}:${autocomplete}"`);
+        return null;
+    }
+
     let activeCode = "";
     let currentState: FieldState = "";
 
     const rawMessages = feedbackElement?.dataset.messages;
     const messages: Record<string, string> = rawMessages ? JSON.parse(rawMessages) : {};
+
     if (feedbackElement) delete feedbackElement.dataset.messages;
 
     const showMessage = (code: string) => {
@@ -40,8 +46,6 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
         fieldElement.dataset.strength = strength ?? "";
 
         if (code) showMessage(code);
-
-        console.log("validate", { code, state, strength, requirements });
 
         if (requirements) {
             Object.entries(requirements).forEach(([requirement, isValid]) => {

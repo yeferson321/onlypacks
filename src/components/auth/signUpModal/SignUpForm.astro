@@ -66,7 +66,7 @@ const { translations } = Astro.props;
             
         <div class="relative">
 
-            <input type="password" name="newPassword" class="field-input peer block w-full py-3 px-4 border rounded-2xl border-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="new-password" minlength={8} maxlength={64} data-field-input placeholder=" " required={true}>
+            <input type="password" name="newPassword" class="field-input peer block w-full py-3 px-4 border rounded-2xl border-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="new-password" minlength={10} maxlength={64} data-field-input placeholder=" " required={true}>
             <label class="field-label absolute left-3 px-1 pointer-events-none duration-300 top-0 -translate-y-1/2 text-sm text-neutral-600 bg-white
                 peer-placeholder-shown:top-1/2
                 peer-placeholder-shown:-translate-y-1/2
@@ -104,7 +104,7 @@ const { translations } = Astro.props;
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4.5 shrink-0">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
-                Letras mayúsculas y minúsculas
+                Letras mayúsculas o minúsculas
             </span>
 
             <span class="flex items-start gap-1 text-sm text-neutral-600" data-requirement="number">

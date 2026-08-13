@@ -13,10 +13,10 @@
     "generate-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.1.6",
+    "@astrojs/cloudflare": "^14.2.1",
     "@supabase/supabase-js": "^2.111.0",
     "@tailwindcss/vite": "^4.2.2",
-    "astro": "^7.1.0",
+    "astro": "^7.2.1",
     "hash-wasm": "^4.12.0",
     "pbkdf2-lite": "^0.1.1",
     "tailwindcss": "^4.2.2",

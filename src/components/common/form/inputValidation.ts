@@ -86,74 +86,19 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
     }
 
     const requirements = {
-        length: password.length >= 10,
         letter: /\p{L}/u.test(password),
         number: /\p{Nd}/u.test(password),
         special: /[\p{P}$+=]/u.test(password),
+        length: password.length >= properties.minLength,
     };
 
-    if (/\p{White_Space}/u.test(password)) {
-        return makeResult({
-            code: "NO_SPACES",
-            state: "invalid",
-            strength: "weak",
-            requirements
-        });
-    }
-
-    if (!requirements.letter) {
-        return makeResult({
-            code: "MISSING_LETTER",
-            state: "invalid",
-            strength: "weak",
-            requirements
-        });
-    }
-
-    if (!requirements.number) {
-        return makeResult({
-            code: "MISSING_NUMBER",
-            state: "invalid",
-            strength: "medium",
-            requirements
-        });
-    }
-
-    if (!requirements.special) {
-        return makeResult({
-            code: "MISSING_SPECIAL_CHAR",
-            state: "invalid",
-            strength: "medium",
-            requirements
-        });
-    }
-
-    if (!requirements.length) {
-        return makeResult({
-            code: "TOO_SHORT",
-            state: "invalid",
-            strength: "medium",
-            requirements
-        });
-    }
-
-    if (password.length > properties.maxLength) {
-        return makeResult({
-            code: "TOO_LONG",
-            state: "invalid",
-            strength: "medium",
-            requirements
-        });
-    }
-
-    if (!validity.valid) {
-        return makeResult({
-            code: "INVALID",
-            state: "invalid",
-            strength: "weak",
-            requirements
-        });
-    }
+    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength: "weak", requirements });
+    if (!requirements.letter) return makeResult({ code: "MISSING_LETTER", state: "invalid", strength: "weak", requirements });
+    if (!requirements.number) return makeResult({ code: "MISSING_NUMBER", state: "invalid", strength: "medium", requirements });
+    if (!requirements.special) return makeResult({ code: "MISSING_SPECIAL_CHAR", state: "invalid", strength: "medium", requirements });
+    if (!requirements.length) return makeResult({ code: "TOO_SHORT", state: "invalid", strength: "medium", requirements });
+    if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength: "medium", requirements });
+    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength: "weak", requirements });
 
     return makeResult({ code: "", state: "valid", strength: "strong", requirements });
 };
