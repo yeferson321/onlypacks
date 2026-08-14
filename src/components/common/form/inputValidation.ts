@@ -83,12 +83,6 @@ export const validatePassword = ({ value, properties, validity }: ValidationCont
 //     return STRENGTH_LEVELS[metCount] ?? "weak";
 // };
 
-const STRENGTH_LEVELS = ["weak", "weak", "fair", "good", "strong"] as const;
-
-const getPasswordStrength = (requirements: { length: boolean; letter: boolean; number: boolean; special: boolean }) => {
-    const metCount = Number(requirements.length) + Number(requirements.letter) + Number(requirements.number) + Number(requirements.special);
-    return STRENGTH_LEVELS[metCount];
-};
 
 export const validateNewPassword = ({ value, properties, validity }: ValidationContext): ValidationResult<NewPasswordCode> => {
     const password = normalize(value);

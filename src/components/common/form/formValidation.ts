@@ -45,12 +45,11 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
         fieldElement.dataset.state = state;
         fieldElement.dataset.strength = strength ?? "";
 
-        if (code) showMessage(code);
+        showMessage(code);
 
         if (requirements) {
             Object.entries(requirements).forEach(([requirement, isValid]) => {
-                const element = fieldElement.querySelector<HTMLElement>(`[data-requirement="${requirement}"]`);
-                element?.setAttribute("data-valid", String(isValid));
+                fieldElement.setAttribute(`data-req-${requirement}`, String(isValid));
             });
         }
         
