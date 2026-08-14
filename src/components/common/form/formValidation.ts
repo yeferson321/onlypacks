@@ -50,11 +50,10 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
         if (requirements) {
             Object.entries(requirements).forEach(([requirement, isValid]) => {
                 const element = fieldElement.querySelector<HTMLElement>(`[data-requirement="${requirement}"]`);
-
-                element?.classList.toggle("valid", isValid);
+                element?.setAttribute("data-valid", String(isValid));
             });
         }
-
+        
         currentState = state;
         return state;
     };

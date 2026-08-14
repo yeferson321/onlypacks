@@ -105,6 +105,15 @@
                             "showPassword": "Mostrar contraseña",
                             "hidePassword": "Ocultar contraseña"
                         },
+                        "passwordRules": {
+                            "title": "Tu contraseña debe tener:",
+                            "rules": {
+                                "length": "10 o mas caracteres",
+                                "letter": "Letras mayúsculas o minúsculas",
+                                "number": "Por lo menos un número",
+                                "special": "Por lo menos un caracter especial"
+                            }
+                        },
                         "validation": {
                             "REQUIRED": "La contraseña es obligatoria",
                             "NO_SPACES": "La contraseña no puede contener espacios",

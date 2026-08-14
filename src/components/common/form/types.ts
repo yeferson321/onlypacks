@@ -17,7 +17,7 @@ export type PasswordRequirements = Partial<Record<PasswordRequirement, boolean>>
 export type ValidationResult<Code extends string = string> = {
     code: "" | Code;
     state: "" | "invalid" | "valid";
-    strength?: "" | "weak" | "medium" | "strong";
+    strength?: "" | "weak" | "fair" | "good" | "strong";
     requirements?: PasswordRequirements;
 };
 

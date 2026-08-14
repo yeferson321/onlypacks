@@ -62,18 +62,32 @@ export const validatePassword = ({ value, properties, validity }: ValidationCont
 
     if (!password) {
         return properties.required
-            ? makeResult({ code: "REQUIRED", state: "invalid", strength: "weak" })
+            ? makeResult({ code: "REQUIRED", state: "invalid", strength })
             : makeResult({ code: "", state: "", strength: "" });
     }
 
-    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength: "weak" });
+    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength });
 
     if (password.length < properties.minLength) return makeResult({ code: "TOO_SHORT", state: "invalid", strength: "medium" });
     if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength: "medium" });
 
-    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength: "weak" });
+    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength });
 
     return makeResult({ code: "", state: "valid", strength: "strong" });
+};
+
+// const STRENGTH_LEVELS = ["weak", "weak", "fair", "good", "strong"] as const;
+
+// const getPasswordStrength = (requirements: Record<string, boolean>): NonNullable<ValidationResult["strength"]> => {
+//     const metCount = Object.values(requirements).filter(Boolean).length;
+//     return STRENGTH_LEVELS[metCount] ?? "weak";
+// };
+
+const STRENGTH_LEVELS = ["weak", "weak", "fair", "good", "strong"] as const;
+
+const getPasswordStrength = (requirements: { length: boolean; letter: boolean; number: boolean; special: boolean }) => {
+    const metCount = Number(requirements.length) + Number(requirements.letter) + Number(requirements.number) + Number(requirements.special);
+    return STRENGTH_LEVELS[metCount];
 };
 
 export const validateNewPassword = ({ value, properties, validity }: ValidationContext): ValidationResult<NewPasswordCode> => {
@@ -81,7 +95,7 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
 
     if (!password) {
         return properties.required
-            ? makeResult({ code: "REQUIRED", state: "invalid", strength: "weak", requirements: { length: false, letter: false, number: false, special: false }})
+            ? makeResult({ code: "REQUIRED", state: "invalid", strength: "", requirements: { length: false, letter: false, number: false, special: false }})
             : makeResult({ code: "", state: "", strength: "", requirements: {} });
     }
 
@@ -92,15 +106,18 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
         length: password.length >= properties.minLength,
     };
 
-    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength: "weak", requirements });
-    if (!requirements.letter) return makeResult({ code: "MISSING_LETTER", state: "invalid", strength: "weak", requirements });
-    if (!requirements.number) return makeResult({ code: "MISSING_NUMBER", state: "invalid", strength: "medium", requirements });
-    if (!requirements.special) return makeResult({ code: "MISSING_SPECIAL_CHAR", state: "invalid", strength: "medium", requirements });
-    if (!requirements.length) return makeResult({ code: "TOO_SHORT", state: "invalid", strength: "medium", requirements });
-    if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength: "medium", requirements });
-    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength: "weak", requirements });
+    const metCount = Number(requirements.length) + Number(requirements.letter) + Number(requirements.number) + Number(requirements.special);
+    const strength: NonNullable<ValidationResult["strength"]> = metCount <= 1 ? "weak" : metCount === 2 ? "fair" : metCount === 3 ? "good" : "strong";
 
-    return makeResult({ code: "", state: "valid", strength: "strong", requirements });
+    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength, requirements });
+    if (!requirements.letter) return makeResult({ code: "MISSING_LETTER", state: "invalid", strength, requirements });
+    if (!requirements.number) return makeResult({ code: "MISSING_NUMBER", state: "invalid", strength, requirements });
+    if (!requirements.special) return makeResult({ code: "MISSING_SPECIAL_CHAR", state: "invalid", strength, requirements });
+    if (!requirements.length) return makeResult({ code: "TOO_SHORT", state: "invalid", strength, requirements });
+    if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength, requirements });
+    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength, requirements });
+
+    return makeResult({ code: "", state: "valid", strength, requirements });
 };
 
 // export const validateNewPassword = ({ value, properties, validity }: ValidationContext): ValidationResult<NewPasswordCode> => {
@@ -111,13 +128,13 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
 
 //     if (!password) {
 //         return properties.required
-//             ? makeResult({ code: "REQUIRED", state: "invalid", strength: "weak", requirements: { length: false, case: false, number: false, special: false } })
+//             ? makeResult({ code: "REQUIRED", state: "invalid", strength, requirements: { length: false, case: false, number: false, special: false } })
 //             : makeResult({ code: "", state: "", strength: "", requirements: {} });
 //     }
 
-//     if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength: "weak", requirements: { length: false, case: false, number: false, special: false } });
+//     if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength, requirements: { length: false, case: false, number: false, special: false } });
 
-//     if (!/\p{L}/u.test(password)) return makeResult({ code: "MISSING_LETTER", state: "invalid", strength: "weak", requirements: { length: false, case: false, number: false, special: false } });
+//     if (!/\p{L}/u.test(password)) return makeResult({ code: "MISSING_LETTER", state: "invalid", strength, requirements: { length: false, case: false, number: false, special: false } });
 
 //     if (!/\p{Nd}/u.test(password)) return makeResult({ code: "MISSING_NUMBER", state: "invalid", strength: "medium", requirements: { length: false, case: true, number: false, special: false } });
 
@@ -126,7 +143,7 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
 //     if (password.length < properties.minLength) return makeResult({ code: "TOO_SHORT", state: "invalid", strength: "medium", requirements: { length: false, case: true, number: true, special: true } });
 //     if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength: "medium", requirements: { length: true, case: true, number: true, special: true } });
 
-//     if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength: "weak", requirements: { length: false, case: false, number: false, special: false } });
+//     if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength, requirements: { length: false, case: false, number: false, special: false } });
 
 //     return makeResult({ code: "", state: "valid", strength: "strong", requirements: { length: true, case: true, number: true, special: true } });
 // };
