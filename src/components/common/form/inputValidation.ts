@@ -104,11 +104,11 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
     const strength: NonNullable<ValidationResult["strength"]> = metCount <= 1 ? "weak" : metCount === 2 ? "fair" : metCount === 3 ? "good" : "strong";
 
     if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength, requirements });
-    if (!requirements.letter) return makeResult({ code: "MISSING_LETTER", state: "invalid", strength, requirements });
-    if (!requirements.number) return makeResult({ code: "MISSING_NUMBER", state: "invalid", strength, requirements });
-    if (!requirements.special) return makeResult({ code: "MISSING_SPECIAL_CHAR", state: "invalid", strength, requirements });
-    if (!requirements.length) return makeResult({ code: "TOO_SHORT", state: "invalid", strength, requirements });
-    if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength, requirements });
+    if (!requirements.letter) return makeResult({ code: "", state: "", strength, requirements });
+    if (!requirements.number) return makeResult({ code: "", state: "", strength, requirements });
+    if (!requirements.special) return makeResult({ code: "", state: "", strength, requirements });
+    if (!requirements.length) return makeResult({ code: "", state: "", strength, requirements });
+    if (password.length > properties.maxLength) return makeResult({ code: "", state: "", strength, requirements });
     if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength, requirements });
 
     return makeResult({ code: "", state: "valid", strength, requirements });

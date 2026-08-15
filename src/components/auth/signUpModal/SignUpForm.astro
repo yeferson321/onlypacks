@@ -88,9 +88,7 @@ const { translations } = Astro.props;
             </IconToggle>
         </div>
 
-        <div class="field-feedback mt-0.5 mx-4 text-center text-sm" data-field-feedback aria-live="polite" data-messages={JSON.stringify(translations.fields.newPassword.validation)}></div>
-        
-        <div class="mt-2 space-y-1 password-rules ">
+        <div class="mt-2 space-y-1 password-rules">
 
             <p class="text-sm text-neutral-600">{translations.fields.newPassword.passwordRules.title}</p>
 
@@ -121,6 +119,8 @@ const { translations } = Astro.props;
                 <div class="field-strength-bar w-0 h-1 rounded-full bg-emerald-500 transition-all duration-300 ease-in-out"></div>
             </div>
         </div>
+
+        <div class="field-feedback mt-0.5 mx-4 text-center text-sm" data-field-feedback aria-live="polite" data-messages={JSON.stringify(translations.fields.newPassword.validation)}></div>
         
     </div>
 
