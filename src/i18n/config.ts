@@ -4,8 +4,8 @@ export type Translation = typeof en;
 
 export namespace Translation {
     export type LoginModal = Translation["loginModal"];
-	export type LoginForm = Translation["loginModal"]["form"]["login"];
-    export type RegisterForm = Translation["loginModal"]["form"]["register"];
+	export type SignInForm = LoginModal["form"]["signIn"];
+    export type SignUpForm = LoginModal["form"]["signUp"];
 }
 
 export const locales = [

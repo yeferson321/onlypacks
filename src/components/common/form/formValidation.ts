@@ -4,6 +4,7 @@ import { validators } from '@/components/common/form/inputValidation';
 type FieldState = "valid" | "invalid" | "";
 
 type FieldController = {
+    fieldElement: HTMLDivElement; // necesario para poder leer .hidden
     inputElement: HTMLInputElement;
     validate: () => FieldState;
     getState: () => FieldState;
@@ -35,6 +36,9 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
     const showMessage = (code: string) => {
         if (!feedbackElement) return;
         if (code === activeCode) return;
+
+        console.log(code, messages[code])
+        
         feedbackElement.textContent = messages[code] ?? "";
         activeCode = code;
     };
@@ -52,7 +56,8 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
                 fieldElement.setAttribute(`data-req-${requirement}`, String(isValid));
             });
         }
-        
+
+
         currentState = state;
         return state;
     };
@@ -72,7 +77,7 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
         });
     }
 
-    return { inputElement, validate, getState: () => currentState };
+    return { fieldElement, inputElement, validate, getState: () => currentState };
 };
 
 export const setupForm = (form: HTMLFormElement, onValidSubmit: (data: Record<string, string>) => void | Promise<void>) => {
@@ -83,6 +88,8 @@ export const setupForm = (form: HTMLFormElement, onValidSubmit: (data: Record<st
         if (!submitButton) return;
 
         const canSubmit = fields.every((field) => {
+            if (field.fieldElement.hidden) return true; // un campo oculto no bloquea el submit
+
             const hasValue = field.inputElement.value.trim() !== "";
             const isRequired = field.inputElement.required;
             const state = field.getState();
@@ -106,7 +113,11 @@ export const setupForm = (form: HTMLFormElement, onValidSubmit: (data: Record<st
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const states = fields.map((field) => field.validate());
+           const states = fields
+            .filter((field) => !field.fieldElement.hidden) // tampoco se valida al enviar
+            .map((field) => field.validate());
+
+        // const states = fields.map((field) => field.validate());
         const isValid = states.every((state) => state === "valid");
 
         if (!isValid) return;

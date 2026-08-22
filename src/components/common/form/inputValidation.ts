@@ -1,4 +1,4 @@
-import type { ValidationContext, ValidationResult, Validator, NameCode, EmailCode, PasswordCode, NewPasswordCode } from "./types";
+import type { ValidationContext, ValidationResult, Validator, NameCode, EmailCode, CurrentPasswordCode, NewPasswordCode } from "./types";
 
 const makeResult = <Code extends string>(result: ValidationResult<Code>) => result;
 
@@ -9,7 +9,7 @@ export const validateName = ({ value, properties, validity }: ValidationContext)
 
     if (!name) {
         return properties.required 
-            ? makeResult({ code: "REQUIRED", state: "invalid" }) 
+            ? makeResult({ code: "REQUIRED", state: "invalid" })
             : makeResult({ code: "", state: "" });
     }
 
@@ -18,7 +18,6 @@ export const validateName = ({ value, properties, validity }: ValidationContext)
 
     if (name.length < properties.minLength) return makeResult({ code: "TOO_SHORT", state: "invalid" });
     if (name.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid" });
-
     if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid" });
 
     return makeResult({ code: "", state: "valid" });
@@ -34,55 +33,37 @@ export const validateEmail = ({ value, properties, validity }: ValidationContext
     }
 
     if (/\p{White_Space}/u.test(email)) return makeResult({ code: "NO_SPACES", state: "invalid" });
-
     if (!email.includes("@")) return makeResult({ code: "MISSING_AT", state: "invalid" });
 
     const [username, domain] = email.split("@");
 
     if (!username) return makeResult({ code: "MISSING_LOCAL_PART", state: "invalid" });
-
     if (!domain) return makeResult({ code: "MISSING_DOMAIN", state: "invalid" });
-
     if (email.length < properties.minLength) return makeResult({ code: "TOO_SHORT", state: "invalid" });
     if (email.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid" });
-
     if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid" });
 
     return makeResult({ code: "", state: "valid" });
 }
 
-// const validateLength = (valueLength: number, minLength: number, maxLength: number): ValidationResult | null => {
-//     if (valueLength < minLength) return { state: "invalid", code: "TOO_SHORT" };
-//     if (valueLength > maxLength) return { state: "invalid", code: "TOO_LONG" };
-//     return null;
-// };
-
-export const validatePassword = ({ value, properties, validity }: ValidationContext): ValidationResult<PasswordCode> => {
+export const validateCurrentPassword = ({ value, properties, validity }: ValidationContext): ValidationResult<CurrentPasswordCode> => {
     const password = normalize(value);
 
     if (!password) {
         return properties.required
-            ? makeResult({ code: "REQUIRED", state: "invalid", strength })
-            : makeResult({ code: "", state: "", strength: "" });
+            ? makeResult({ code: "REQUIRED", state: "invalid" })
+            : makeResult({ code: "", state: "" });
     }
 
-    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength });
+    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid" });
 
-    if (password.length < properties.minLength) return makeResult({ code: "TOO_SHORT", state: "invalid", strength: "medium" });
-    if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid", strength: "medium" });
+    if (password.length < properties.minLength) return makeResult({ code: "", state: "" });
+    if (password.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid" });
 
-    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid", strength });
+    if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid" });
 
-    return makeResult({ code: "", state: "valid", strength: "strong" });
+    return makeResult({ code: "", state: "valid" });
 };
-
-// const STRENGTH_LEVELS = ["weak", "weak", "fair", "good", "strong"] as const;
-
-// const getPasswordStrength = (requirements: Record<string, boolean>): NonNullable<ValidationResult["strength"]> => {
-//     const metCount = Object.values(requirements).filter(Boolean).length;
-//     return STRENGTH_LEVELS[metCount] ?? "weak";
-// };
-
 
 export const validateNewPassword = ({ value, properties, validity }: ValidationContext): ValidationResult<NewPasswordCode> => {
     const password = normalize(value);
@@ -104,6 +85,7 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
     const strength: NonNullable<ValidationResult["strength"]> = metCount <= 1 ? "weak" : metCount === 2 ? "fair" : metCount === 3 ? "good" : "strong";
 
     if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", strength, requirements });
+    if (/(.)\1{2,}/u.test(password)) return makeResult({ code: "REPEATED_CHARACTERS", state: "invalid", strength, requirements });
     if (!requirements.letter) return makeResult({ code: "", state: "", strength, requirements });
     if (!requirements.number) return makeResult({ code: "", state: "", strength, requirements });
     if (!requirements.special) return makeResult({ code: "", state: "", strength, requirements });
@@ -145,7 +127,7 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
 export const validators: Record<string, Validator> = {
     "text:name": validateName,
     "email:email": validateEmail,
-    "password:password": validatePassword,
+    "password:current-password": validateCurrentPassword,
     "password:new-password": validateNewPassword,
 };
 

@@ -4,20 +4,23 @@
     },
 
     "loginModal": {
-        "title": {
-            "login": "Inicia sesión en Wise",
-            "register": "Crea tu cuenta en Wise"
-        },
-        "subtitle": {
-            "login": {
-                "text": "¿Ya tienes una cuenta?",
-                "action": "Inicia sesión"
-            },
-            "register": {
-                "text": "¿Aún no tienes una cuenta?",
+
+        "signIn": {
+            "title": "Inicia sesión",
+            "subtitle": {
+                "text": "¿No tienes una cuenta?",
                 "action": "Crea una cuenta"
             }
         },
+
+        "signUp": {
+            "title": "Crea tu cuenta",
+            "subtitle": {
+                "text": "¿Ya tienes una cuenta?",
+                "action": "Inicia sesión"
+            }
+        },
+
         "social": {
             "title": "También puedes usar",
             "google": {
@@ -37,21 +40,22 @@
         },
 
         "form": {
-            "login": {
+            "signIn": {
                 "fields": {
                     "email": {
                         "label": "Tu correo o usuario",
-
                         "validation": {
-                            "REQUIRED": "El nombre es obligatorio",
-                            "TOO_SHORT": "El nombre es demasiado corto",
-                            "TOO_LONG": "El nombre es demasiado largo",
-                            "INVALID_CHARS": "Solo se permiten letras, espacios, apóstrofes y guiones",
-                            "SPACES": "No se permiten espacios consecutivos",
-                            "INVALID": "Introduce un nombre válido"
+                            "REQUIRED": "El correo es obligatorio",
+                            "NO_SPACES": "El correo no puede contener espacios",
+                            "MISSING_AT": "El correo debe contener un @",
+                            "MISSING_LOCAL_PART": "Debe haber texto antes del @",
+                            "MISSING_DOMAIN": "Debe haber un dominio después del @",
+                            "TOO_SHORT": "El correo es demasiado corto",
+                            "TOO_LONG": "El correo es demasiado largo",
+                            "INVALID": "Introduce un correo electrónico válido"
                         }
                     },
-                    "password": {
+                    "currentPassword": {
                         "label": "Tu contraseña",
                         "ariaLabel": {
                             "showPassword": "Mostrar contraseña",
@@ -61,7 +65,8 @@
                             "REQUIRED": "La contraseña es obligatoria",
                             "NO_SPACES": "No puede contener espacios",
                             "TOO_SHORT": "Debe tener al menos 8 caracteres",
-                            "TOO_LONG": "Debe tener al maximo 8 caracteres"
+                            "TOO_LONG": "Debe tener al maximo 8 caracteres",
+                            "INVALID": "Introduce una contraseña válida"
                         }
                     }
                 },
@@ -71,7 +76,7 @@
                 }
             },
             
-            "register": {
+            "signUp": {
                 "fields": {
                     "name": {
                         "label": "Tu nombre",
@@ -86,10 +91,10 @@
                     },
 
                     "email": {
-                        "label": "Tu correo",
+                        "label": "Tu correo o usuario",
                         "validation": {
                             "REQUIRED": "El correo es obligatorio",
-                            "NO_SPACES": "El correo no puede contener espacios",
+                            "NO_SPACES": "EREQUIREDl correo no puede contener espacios",
                             "MISSING_AT": "El correo debe contener un @",
                             "MISSING_LOCAL_PART": "Debe haber texto antes del @",
                             "MISSING_DOMAIN": "Debe haber un dominio después del @",
@@ -117,6 +122,7 @@
                         "validation": {
                             "REQUIRED": "La contraseña es obligatoria",
                             "NO_SPACES": "La contraseña no puede contener espacios",
+                            "REPEATED_CHARACTERS": "Hay demasiados caracteres idénticos consecutivos",
                             "MISSING_LETTER": "Debe contener al menos una letra",
                             "MISSING_NUMBER": "Debe contener al menos un número",
                             "MISSING_SPECIAL_CHAR": "Debe contener al menos un carácter especial",

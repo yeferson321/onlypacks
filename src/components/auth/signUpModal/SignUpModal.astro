@@ -1,10 +1,6 @@
 ---
 import type { Translation } from '@/i18n/config';
-import Modal from '@/components/common/Modal.astro';
 import SignUpForm from './SignUpForm.astro';
-import IconXmark from '@/icons/outline/IconXmark.svg';
-import IconGoogle from '@/icons/brands/colored/IconGoogle.svg';
-import IconApple from '@/icons/brands/colored/IconApple.svg';
 
 interface Props {
 	translations: Translation.LoginModal;
@@ -12,39 +8,26 @@ interface Props {
 
 const { translations } = Astro.props;
 ---
-
-<Modal modalId="login-modal" offset="2rem" verticalPosition="center">
-					
-    <div class="px-8 pt-12 pb-8 sm:my-8 sm:w-full sm:max-w-lg rounded-3xl border border-neutral-200/70 bg-white">
-						
-		<h2 id="login-modal-title" class="text-center text-2xl font-medium text-neutral-800">{translations.title.register}</h2>
-
-		<p class="mt-2 text-center text-base text-neutral-800">{translations.subtitle.register.text} <a class="underline font-medium">{translations.subtitle.register.action}</a></p>
-
-		<SignUpForm translations={translations.form.register}/>
-        
-		<p class="mt-6 text-center text-base text-neutral-800">{translations.social.title}</p>
-					
-        <div class="mt-4 flex gap-3">
-
-        	<button class="flex-1 flex justify-center p-2 rounded-2xl border border-neutral-200/70 bg-neutral-100" aria-label={translations.social.google.ariaLabel}>
-        	    <IconGoogle width="24" height="24"/>
-        	</button>
-						
-        	<button class="flex-1 flex justify-center p-2 rounded-2xl border border-neutral-200/70  bg-neutral-100" aria-label={translations.social.apple.ariaLabel}>
-        	    <IconApple width="24" height="24"/>
-        	</button>
-
-        </div>
-
-		<p class="mt-6 text-center text-sm text-neutral-800">
-            {translations.terms.text} <a href="/terms" class="underline font-medium">{translations.terms.termsOfUse}</a> • <a href="/privacy" class="underline font-medium">{translations.terms.privacyPolicy}</a>
-        </p>
 	
-		<button type="button" class="absolute top-3 inset-e-7" data-modal-close aria-label={translations.close.ariaLabel}>
-			<IconXmark stroke-width="1.8" width="28" height="28" class="stroke-neutral-600"/>
-		</button>
-					
-    </div>
+<h2 id="login-modal-title" class="text-center text-2xl font-medium text-neutral-800">{translations.signUp.title}</h2>
 
-</Modal>
+<p class="mt-2 text-center text-base text-neutral-800">{translations.signUp.subtitle.text} <button type="button" class="underline font-medium" data-multistep-target="sign-in" aria-label="">{translations.signUp.subtitle.action}</button></p>
+
+<SignUpForm translations={translations.form.signUp}/>
+
+<script>
+	// const multiStepElement = document.querySelector<HTMLDivElement>("[data-multi-step]");
+	// const signUpButton = document.querySelector<HTMLButtonElement>("[data-multistep-view='sign-in']");
+
+	// const hola = (signUpButton: HTMLButtonElement) => {
+	// 	const view = signUpButton.dataset.multistepView;
+
+	// 	console.log("view", view);
+
+    // 	multiStepElement?.dispatchEvent(new CustomEvent("multi-step:change", { 
+    // 	    detail: { view: view } })
+    // 	);
+	// }
+
+	// signUpButton?.addEventListener("click", () => hola(signUpButton));
+</script>
