@@ -17,7 +17,7 @@ const { translations } = Astro.props;
 
         <div class="relative">
 
-            <input type="email" name="email" class="field-input peer text-lg block w-full py-3 px-4 border rounded-2xl border-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="email" minlength={6} maxlength={120} data-field-input placeholder=" " required={true}>
+            <input type="email" name="email" class="field-input peer block w-full py-2.5 px-4 border rounded-2xl border-neutral-600 text-lg text-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="email" minlength={6} maxlength={120} data-field-input placeholder=" " required={true}>
 
             <label class="field-label absolute left-3 px-1 pointer-events-none duration-300 top-0 -translate-y-1/2 text-base text-neutral-600 bg-white
                 peer-placeholder-shown:top-1/2
@@ -42,13 +42,12 @@ const { translations } = Astro.props;
             
         <div class="relative">
                 
-            <input type="password" name="password" class="field-input peer text-lg block w-full py-3 px-4 border rounded-2xl border-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="current-password" minlength={10} maxlength={64} data-field-input placeholder=" " required={true}>
+            <input type="password" name="password" class="field-input peer text-lg block w-full py-2.5 px-4 border rounded-2xl border-neutral-600 bg-transparent transition-colors duration-300 focus:border-blue-500 focus:outline-none" autocomplete="current-password" minlength={10} maxlength={64} data-field-input placeholder=" " required={true}>
                     
             <label class="field-label absolute left-3 px-1 pointer-events-none duration-300 top-0 -translate-y-1/2 text-base text-neutral-600 bg-white
                 peer-placeholder-shown:top-1/2
                 peer-placeholder-shown:-translate-y-1/2
                 peer-placeholder-shown:text-lg
-
                 peer-placeholder-shown:bg-transparent
                 peer-focus:top-0
                 peer-focus:-translate-y-1/2

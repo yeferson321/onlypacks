@@ -43,7 +43,7 @@
             "signIn": {
                 "fields": {
                     "email": {
-                        "label": "Tu correo o usuario",
+                        "label": "Tu correo electronico",
                         "validation": {
                             "REQUIRED": "El correo es obligatorio",
                             "NO_SPACES": "El correo no puede contener espacios",
@@ -91,7 +91,7 @@
                     },
 
                     "email": {
-                        "label": "Tu correo o usuario",
+                        "label": "Tu correo electronico",
                         "validation": {
                             "REQUIRED": "El correo es obligatorio",
                             "NO_SPACES": "EREQUIREDl correo no puede contener espacios",

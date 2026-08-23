@@ -9,12 +9,12 @@ interface Props {
 const { translations } = Astro.props;
 ---
 
-<h2 id="login-modal-title" class="text-center text-3xl font-medium text-neutral-800">{translations.signIn.title}</h2>
+<h2 id="login-modal-title" class="text-center text-2xl font-medium text-neutral-800">{translations.signIn.title}</h2>
 
 <p class="mt-2 text-center text-base text-neutral-800">{translations.signIn.subtitle.text} <button type="button" class="underline text-neutral-600 font-medium" data-multistep-target="sign-up" aria-label="">{translations.signIn.subtitle.action}</button></p>
 
 <SignInForm translations={translations.form.signIn}/>
-        
+    
 <script>
 	// const multiStepElement = document.querySelector<HTMLDivElement>("[data-multi-step]");
 	// const signUpButtonElement = document.querySelector<HTMLButtonElement>("[data-multistep-target='sign-up']");
