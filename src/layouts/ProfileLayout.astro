@@ -5,7 +5,7 @@ import type { Translation, LocaleCode } from '@/i18n/config';
 
 import ModalLanguage from '@/components/ModalLanguage.astro';
 
-import LoginModal from '@/components/auth/signInModal/SignInModal.astro';
+// import LoginModal from '@/components/auth/signInModal/SignInModal.astro';
 
 import IconHeart from '@/icons/outline/IconHeart.svg';
 
@@ -48,7 +48,7 @@ const { translations, locale, data } = Astro.props;
 			<IconHeart stroke-width="2" width="26" height="26" class="stroke-blue-500"/>
 		</button>
 
-		<LoginModal translations={translations.loginModal}/>
+		<!-- <LoginModal translations={translations.loginModal}/> -->
 
 		<main class="scroll-container">
 			<slot />
