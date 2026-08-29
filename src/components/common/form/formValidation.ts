@@ -70,8 +70,8 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
     inputElement.addEventListener("input", debouncedValidate);
 
     if (type === "password") {
-        const toggleButton = fieldElement.querySelector<HTMLElement>('[data-toggle="password"]');
-        toggleButton?.addEventListener("toggle:change", (event) => {
+        const toggleButton = fieldElement.querySelector<HTMLButtonElement>('[data-toggle="password"]');
+        toggleButton?.addEventListener("element-toggle:change", (event) => {
             const { active } = (event as CustomEvent<{ active: boolean }>).detail;
             inputElement.type = active ? "text" : "password";
         });
@@ -80,8 +80,7 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
     return { fieldElement, inputElement, validate, getState: () => currentState };
 };
 
-export const setupForm = (form: HTMLFormElement, onValidSubmit: (data: Record<string, string>) => void | Promise<void>) => {
-
+export const setupForm = <T extends Record<string, string>>(form: HTMLFormElement, onValidSubmit: (data: T) => void | Promise<void>) => {
     const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
 
     const updateSubmitState = () => {
@@ -113,9 +112,7 @@ export const setupForm = (form: HTMLFormElement, onValidSubmit: (data: Record<st
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-           const states = fields
-            .filter((field) => !field.fieldElement.hidden) // tampoco se valida al enviar
-            .map((field) => field.validate());
+        const states = fields.filter((field) => !field.fieldElement.hidden).map((field) => field.validate());
 
         // const states = fields.map((field) => field.validate());
         const isValid = states.every((state) => state === "valid");
@@ -123,7 +120,7 @@ export const setupForm = (form: HTMLFormElement, onValidSubmit: (data: Record<st
         if (!isValid) return;
 
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries()) as Record<string, string>;
+        const data = Object.fromEntries(formData.entries()) as T;
 
         await onValidSubmit(data);
     });

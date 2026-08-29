@@ -2,7 +2,6 @@ export const appendChildElement = (element: HTMLElement) => document.body.append
 export const removeElement = (element: HTMLElement) => element.remove();
 
 export const trapFocus = (element: HTMLElement, event: KeyboardEvent) => {
-    console.log("egw")
     const focusables = Array.from(
         element.querySelectorAll<HTMLElement>(':is(button, [href], input, select, textarea):not([disabled]):not([aria-hidden="true"])')
     ).filter((HTMLElement) => HTMLElement.offsetParent !== null);

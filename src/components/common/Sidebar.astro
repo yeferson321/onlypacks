@@ -6,13 +6,12 @@ interface Props {
     offset?: string;
     horizontalPosition?: 'left' | 'right';
     unmount?: boolean;
-    ariaLabel?: string;
 };
 
-const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right', unmount = true, ariaLabel } = Astro.props;
+const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right', unmount = true } = Astro.props;
 ---
            
-<div id={`sidebar-${sidebarId}`} class:list={["sidebar", className]} data-sidebar-id={sidebarId} data-state="closed" data-horizontal={horizontalPosition} data-unmount={unmount} tabindex="-1" role="dialog" aria-modal="true" aria-label={ariaLabel}>
+<div id={`sidebar-${sidebarId}`} class:list={["sidebar", className]} data-sidebar-id={sidebarId} data-state="closed" data-horizontal={horizontalPosition} data-unmount={unmount} tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="sidebar-overlay" style={overlayColor && `--overlay-color: ${overlayColor};`}></div>
     <div class="sidebar-wrapper">
         <div class="sidebar-panel" style={offset && `--offset: ${offset};`}>
@@ -83,14 +82,13 @@ const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right'
 </style>
 
 <script>
-    const mountSidebar = (sidebarElement: HTMLElement) => document.body.appendChild(sidebarElement);
-    const unmountSidebar = (sidebarElement: HTMLElement) => sidebarElement.remove();
+    import { appendChildElement, removeElement, trapFocus } from '@/components/common/utils/Hola';
 
     document.querySelectorAll<HTMLDivElement>(".sidebar").forEach((sidebarElement) => {
         const { sidebarId, unmount } = sidebarElement.dataset; 
         if (!sidebarId) throw new Error('Missing "data-sidebar-id" attribute on Sidebar component');
 
-        unmount === "true" ? unmountSidebar(sidebarElement) : mountSidebar(sidebarElement);
+        unmount === "true" ? removeElement(sidebarElement) : appendChildElement(sidebarElement);
 
         const sidebarOverlayElement = sidebarElement.querySelector<HTMLDivElement>(".sidebar-overlay");
         if (!sidebarOverlayElement) throw new Error(`Sidebar "${sidebarId}": component internal element(s) .sidebar-overlay not found.`);
@@ -101,53 +99,27 @@ const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right'
         let lastFocusedElement: HTMLElement | null = null;
 
         const setAccessibility = (isOpen: boolean) => {
-            openButtonElement?.setAttribute("aria-expanded", String(isOpen));
+            sidebarElement.dataset.state = isOpen ? "closed" : "open";
+            sidebarElement.setAttribute("aria-hidden", String(isOpen));
+            openButtonElement?.setAttribute("aria-expanded", String(!isOpen));
         };
 
         const handleKeyboard = (event: KeyboardEvent) => {
             if (event.key === "Escape") return hideSidebar();
-
-            /* if (event.key !== "Tab") return; */
-
-            /* if (event.key === "Tab" && !event.shiftKey) trapFocus(event); */
-
-            console.log("handleKeyboard")
-            
-            const focusables = Array.from(
-                sidebarElement.querySelectorAll<HTMLElement>(':is(button, [href], input, select, textarea):not([disabled]):not([aria-hidden="true"])')
-            ).filter((HTMLElement) => HTMLElement.offsetParent !== null);
-
-            if (focusables.length === 0) return;
-
-            const firstFocusable = focusables[0];
-            const lastFocusable = focusables[focusables.length - 1];
-
-            if (document.activeElement === lastFocusable) {
-                event.preventDefault();
-                firstFocusable.focus();
-            }
-
-            if (document.activeElement === firstFocusable) {
-                event.preventDefault();
-                lastFocusable.focus();
-            }
+            if (event.key === "Tab") trapFocus(sidebarElement, event);
         };
 
         const showSidebar = () => {
             if (sidebarElement.dataset.state !== "closed") return;
-            if (unmount === "true") mountSidebar(sidebarElement);
+            if (unmount === "true") appendChildElement(sidebarElement);
 
             sidebarElement.dataset.state = "opening";
 
-            console.log("hola show sidebar")
-            
             requestAnimationFrame(() => {
-                sidebarElement.dataset.state = "open";
+                setAccessibility(false);
 
-                window.addEventListener("keydown", handleKeyboard); 
-                
-                setAccessibility(true);
-
+                sidebarElement.addEventListener("keydown", handleKeyboard); 
+ 
                 lastFocusedElement = document.activeElement as HTMLElement;
 
                 (focusableElement || sidebarElement)?.focus();
@@ -157,18 +129,15 @@ const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right'
         const hideSidebar = () => {
             if (sidebarElement.dataset.state !== "open") return;
 
-            window.removeEventListener("keydown", handleKeyboard);
-            setAccessibility(false);
+            sidebarElement.removeEventListener("keydown", handleKeyboard);
 
             lastFocusedElement?.focus();
-            
-            console.log("hola hide sidebar")
-            
+
             sidebarElement.dataset.state = "closing";
 
             sidebarOverlayElement.addEventListener("transitionend", () => {
-                sidebarElement.dataset.state = "closed";
-                if (unmount === "true") unmountSidebar(sidebarElement);
+                setAccessibility(true);
+                if (unmount === "true") removeElement(sidebarElement);
             }, { once: true });
         };
 

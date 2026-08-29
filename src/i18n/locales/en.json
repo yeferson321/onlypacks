@@ -4,49 +4,19 @@
     },
 
     "loginModal": {
-
         "signIn": {
             "title": "Inicia sesión",
             "subtitle": {
-                "text": "Si no tienes una cuenta, puedes crear una",
-                "action": "Crear una cuenta"
-            }
-        },
-
-        "signUp": {
-            "title": "Crea tu cuenta",
-            "subtitle": {
-                "text": "Si ya tienes una cuenta, puedes iniciar sesión",
-                "action": "Inicia sesión"
-            }
-        },
-
-        "social": {
-            "title": "También puedes usar",
-            "google": {
-                "ariaLabel": "Iniciar sesión con Google"
+                "text": "¿No tienes una cuenta?",
+                "action": "Crea una cuenta"
             },
-            "apple": {
-                "ariaLabel": "Iniciar sesión con Apple"
-            }
-        },
-        "terms": {
-            "text": "Al registrarte, aceptas nuestras",
-            "termsOfUse": "Condiciones de Uso",
-            "privacyPolicy": "Política de Privacidad"
-        },
-        "close": {
-            "ariaLabel": "Cerrar modal"
-        },
-
-        "form": {
-            "signIn": {
+            "form": {
                 "fields": {
                     "email": {
-                        "label": "Tu correo o usuario",
+                        "label": "Tu correo electronico",
                         "validation": {
                             "REQUIRED": "El correo es obligatorio",
-                            "NO_SPACES": "EREQUIREDl correo no puede contener espacios",
+                            "NO_SPACES": "El correo no puede contener espacios",
                             "MISSING_AT": "El correo debe contener un @",
                             "MISSING_LOCAL_PART": "Debe haber texto antes del @",
                             "MISSING_DOMAIN": "Debe haber un dominio después del @",
@@ -70,13 +40,19 @@
                         }
                     }
                 },
-
                 "actions": {
                     "submit": "Iniciar sesión"
                 }
+            }
+        },
+
+        "signUp": {
+            "title": "Crea tu cuenta",
+            "subtitle": {
+                "text": "¿Ya tienes una cuenta?",
+                "action": "Inicia sesión"
             },
-            
-            "signUp": {
+            "form": {
                 "fields": {
                     "name": {
                         "label": "Tu nombre",
@@ -91,7 +67,7 @@
                     },
 
                     "email": {
-                        "label": "Tu correo o usuario",
+                        "label": "Tu correo electronico",
                         "validation": {
                             "REQUIRED": "El correo es obligatorio",
                             "NO_SPACES": "EREQUIREDl correo no puede contener espacios",
@@ -137,6 +113,26 @@
                     "submit": "Crear cuenta"
                 }
             }
+        },
+
+        "social": {
+            "title": "También puedes usar",
+            "google": {
+                "ariaLabel": "Iniciar sesión con Google"
+            },
+            "apple": {
+                "ariaLabel": "Iniciar sesión con Apple"
+            }
+        },
+
+        "terms": {
+            "text": "Al registrarte, aceptas nuestras",
+            "termsOfUse": "Condiciones de Uso",
+            "privacyPolicy": "Política de Privacidad"
+        },
+
+        "close": {
+            "ariaLabel": "Cerrar modal"
         }
     }
 }

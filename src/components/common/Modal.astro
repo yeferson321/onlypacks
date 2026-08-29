@@ -108,20 +108,6 @@ const { modalId, className, overlayColor, offset, verticalPosition = 'center', u
             if (event.key === "Tab") trapFocus(modalElement, event);
         };
 
-
-          const FOCUSABLE = [
-    'a[href]',
-    'button:not([disabled])',
-    'input:not([disabled])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
-    '[tabindex]:not([tabindex="-1"])',
-  ].join(', ');
- 
-  function getFocusable() {
-    return [...modalElement.querySelectorAll(FOCUSABLE)];
-  }
-
         const showModal = () => {
             if (modalElement.dataset.state !== "closed") return;
             if (unmount === "true") appendChildElement(modalElement);
@@ -135,13 +121,6 @@ const { modalId, className, overlayColor, offset, verticalPosition = 'center', u
                 lastFocusedElement = document.activeElement as HTMLElement;
                 
                 (focusableElement || modalElement)?.focus();
-                //  modalElement.focus();
-
-                // Al abrir, mover foco al título
-
-    //                 const focusable = getFocusable();
-    // if (focusable.length) focusable[0].focus();
- 
             });
         };
 

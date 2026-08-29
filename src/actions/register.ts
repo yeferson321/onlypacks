@@ -10,41 +10,43 @@ const normalize = (value: string) => value.normalize("NFC");
 
 export const register = defineAction({
     input: z.object({
-        name: z.string().min(6).max(64),
-        email: z.string().min(6).max(64),
-        newPassword: z.string().min(8).max(64),
+        email: z.string().min(6).max(120),
+        name: z.string().min(2).max(120),
+        password: z.string().min(10).max(64),
     }),
 
-    handler: async ({ name, email, newPassword }, context) => {
+    handler: async ({ email, name, password }, context) => {
         const account = {
-            name: normalize(name),
             email: normalize(email),
-            password_hash: await hasher.hash(normalize(newPassword)),
+            name: normalize(name),
+            password_hash: await hasher.hash(normalize(password)),
         };
 
-        // const { data, error } = await supabase.from('accounts').insert(account)
+        const { data, error } = await supabase.from('accounts').insert(account)
 
-        // if (error) {
-        //     if (error.code === '23505') { // violación de unique en Postgres
-        //         throw new ActionError({ code: 'CONFLICT', message: 'Ese correo ya está registrado' });
-        //     }
+        console.log(error)
 
-        //     throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'No se pudo completar el registro' });
-        // }
+        if (error) {
+            if (error.code === '23505') { // violación de unique en Postgres
+                throw new ActionError({ code: 'CONFLICT', message: 'Ese correo ya está registrado' });
+            }
 
-        const sesionId = crypto.randomUUID();
+            throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'No se pudo completar el registro' });
+        }
 
-        context.cookies.set('sesion_id', sesionId, {
-            maxAge: 3600,      // 1 hora, en segundos
-            path: '/',
-            httpOnly: true,
-            secure: ENV.PROD,
-            sameSite: 'lax',
-        });
+        // const sesionId = crypto.randomUUID();
 
-        const cookie = context.cookies.get('sesion_id');
+        // context.cookies.set('sesion_id', sesionId, {
+        //     maxAge: 3600,      // 1 hora, en segundos
+        //     path: '/',
+        //     httpOnly: true,
+        //     secure: ENV.PROD,
+        //     sameSite: 'lax',
+        // });
 
-        console.log("hola", cookie, ENV.PROD)
+        // const cookie = context.cookies.get('sesion_id');
+
+        // console.log("hola", cookie, ENV.PROD)
 
         return {
             success: true,

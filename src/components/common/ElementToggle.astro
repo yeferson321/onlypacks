@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<"button"> {
+    ariaLabelActive: string;
+    ariaLabelInactive: string;
+}
+
+const { class: className = "", ariaLabelActive, ariaLabelInactive, ...attributes } = Astro.props;
+---
+
+<button  class:list={["element-toggle", className]} data-state="inactive" data-aria-label-active={ariaLabelActive} data-aria-label-inactive={ariaLabelInactive} {...attributes} aria-label={ariaLabelInactive} aria-pressed="false">        
+    <slot />
+</button>
+
+<script>
+    const setupElementToggle = (buttonElement: HTMLButtonElement) => {
+        const { ariaLabelActive = "", ariaLabelInactive = "" } = buttonElement.dataset;
+            
+        const elementOn = buttonElement.querySelector<HTMLElement>("[data-element-active]");
+        const elementOff = buttonElement.querySelector<HTMLElement>("[data-element-inactive]");
+
+        const toggleVisibility = () => {
+            console.log("hola se hice click")
+            const isActive = buttonElement.dataset.state === "active";
+            const nextIsActive = !isActive;
+
+            buttonElement.dataset.state = nextIsActive ? "active" : "inactive";
+            buttonElement.setAttribute("aria-label", nextIsActive ? ariaLabelActive : ariaLabelInactive);
+            buttonElement.setAttribute("aria-pressed", String(nextIsActive));
+
+            elementOn?.classList.toggle("hidden", nextIsActive);
+            elementOff?.classList.toggle("hidden", !nextIsActive);
+
+            buttonElement.dispatchEvent(new CustomEvent("element-toggle:change", { detail: { active: nextIsActive }, bubbles: true }));
+        };
+
+        buttonElement.addEventListener("click", toggleVisibility);
+        buttonElement.addEventListener("element-toggle:toggle", toggleVisibility);
+    };
+
+    document.querySelectorAll<HTMLButtonElement>(".element-toggle").forEach(setupElementToggle);
+</script>
