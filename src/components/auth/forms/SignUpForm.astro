@@ -62,19 +62,6 @@ const { translations } = Astro.props;
             </span>
                 
         </div>
-            
-        <!-- <div class="mt-3">
-            <div class="w-full h-1 rounded-full bg-neutral-200">
-                <div class="field-strength-bar w-0 h-1 rounded-full bg-emerald-500 transition-all duration-300 ease-in-out"></div>
-            </div>
-            
-            <div class="mt-3 text-sm">
-                Evita usar contraseñas que hayas utilizado en otros sitios web o que se puedan adivinar fácilmente.   
-            </div>
-
-            <div class="field-feedback mt-0.5 mx-4 text-center text-sm" data-field-feedback aria-live="polite" data-messages={JSON.stringify(translations.fields.newPassword.validation)}></div>
-
-        </div> -->
 
     </Input>
 
@@ -125,7 +112,7 @@ const { translations } = Astro.props;
                 formFeedback.dataset.state = "invalid";
 
                 submitButton?.dispatchEvent(new CustomEvent("element-toggle:toggle", { bubbles: true }));
-                
+
                 return;
             }
 

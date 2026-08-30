@@ -46,10 +46,9 @@ const { class: className = "" } = Astro.props;
 
         const createDebouncedValidator = (validator: Validator) => {
             return debounce(() => {
-                const { code, state, strength } = validator({ value: inputElement.value, validity: inputElement.validity, properties });
+                const { code, state } = validator({ value: inputElement.value, validity: inputElement.validity, properties });
                 
                 fieldElement.dataset.state = state;
-                fieldElement.dataset.strength = strength ?? "";
                 showMessage(code);
             }, 400);
         };

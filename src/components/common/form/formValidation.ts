@@ -44,20 +44,18 @@ const setupField = (fieldElement: HTMLDivElement, onValidated: () => void): Fiel
     };
 
     const validate = (): FieldState => {
-        const { code, state, strength, requirements } = validator({ value: inputElement.value, validity: inputElement.validity, properties });
-
+        const { code, state, requirements } = validator({ value: inputElement.value, validity: inputElement.validity, properties });
+    
         fieldElement.dataset.state = state;
-        fieldElement.dataset.strength = strength ?? "";
-
+    
         showMessage(code);
-
+    
         if (requirements) {
             Object.entries(requirements).forEach(([requirement, isValid]) => {
                 fieldElement.setAttribute(`data-req-${requirement}`, String(isValid));
             });
         }
-
-
+    
         currentState = state;
         return state;
     };
@@ -89,14 +87,15 @@ export const setupForm = <T extends Record<string, string>>(form: HTMLFormElemen
         const canSubmit = fields.every((field) => {
             if (field.fieldElement.hidden) return true; // un campo oculto no bloquea el submit
 
-            const hasValue = field.inputElement.value.trim() !== "";
             const isRequired = field.inputElement.required;
             const state = field.getState();
 
-            // un campo bloquea el submit si es requerido y está vacío, o si su estado es "invalid"
-            if (isRequired && !hasValue) return false;
-            if (state === "invalid") return false;
-            return true;
+            // un campo requerido solo permite submit si terminó de validarse como "valid"
+            // (esto también cubre el caso de "" mientras la password no cumple todos los requirements)
+            if (isRequired) return state === "valid";
+
+            // un campo opcional bloquea solo si quedó explícitamente inválido
+            return state !== "invalid";
         });
 
         submitButton.disabled = !canSubmit;

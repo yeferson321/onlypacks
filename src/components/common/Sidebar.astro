@@ -82,7 +82,7 @@ const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right'
 </style>
 
 <script>
-    import { appendChildElement, removeElement, trapFocus } from '@/components/common/utils/Hola';
+    import { appendChildElement, removeElement, trapFocus } from '@/components/common/utils/dom';
 
     document.querySelectorAll<HTMLDivElement>(".sidebar").forEach((sidebarElement) => {
         const { sidebarId, unmount } = sidebarElement.dataset; 

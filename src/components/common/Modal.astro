@@ -81,7 +81,7 @@ const { modalId, className, overlayColor, offset, verticalPosition = 'center', u
 </style>
 
 <script>
-    import { appendChildElement, removeElement, trapFocus } from '@/components/common/utils/Hola';
+    import { appendChildElement, removeElement, trapFocus } from '@/components/common/utils/dom';
 
     document.querySelectorAll<HTMLDivElement>(".modal").forEach((modalElement) => {
         const { modalId, unmount } = modalElement.dataset;

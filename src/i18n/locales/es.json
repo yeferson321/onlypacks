@@ -70,7 +70,7 @@
                         "label": "Tu correo electronico",
                         "validation": {
                             "REQUIRED": "El correo es obligatorio",
-                            "NO_SPACES": "EREQUIREDl correo no puede contener espacios",
+                            "NO_SPACES": "El correo no puede contener espacios",
                             "MISSING_AT": "El correo debe contener un @",
                             "MISSING_LOCAL_PART": "Debe haber texto antes del @",
                             "MISSING_DOMAIN": "Debe haber un dominio después del @",
