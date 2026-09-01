@@ -1,5 +1,5 @@
 ---
-import ElementToggle from '@/components/common/ElementToggle.astro';
+import ButtonToggle from '@/components/common/ButtonToggle.astro';
 import IconEye from '@/icons/outline/IconEye.svg';
 import IconEyeSlash from '@/icons/outline/IconEyeSlash.svg';
 import IconInformationCircle from '@/icons/outline/IconInformationCircle.svg';
@@ -37,10 +37,10 @@ const showPasswordToggle = type === 'password' && passwordToggle;
         </label>
 
         { showPasswordToggle && (
-            <ElementToggle type="button" class="absolute right-4 top-1/2 -translate-y-1/2" data-toggle="password" ariaLabelActive={passwordToggle.hideLabel} ariaLabelInactive={passwordToggle.showLabel}>
-                <IconEye stroke-width="1.6" width="20" height="20" class="stroke-neutral-600 hidden" data-element-inactive/>
-                <IconEyeSlash stroke-width="1.6" width="20" height="20" class="stroke-neutral-600" data-element-active/>
-            </ElementToggle>
+            <ButtonToggle toggleId="password" type="button" class="absolute right-4 top-1/2 -translate-y-1/2" data-toggle="password" ariaLabelActive={passwordToggle.hideLabel} ariaLabelInactive={passwordToggle.showLabel}>
+                <IconEye stroke-width="1.6" width="20" height="20" class="stroke-neutral-600 hidden" data-buttontoggle-active />
+                <IconEyeSlash stroke-width="1.6" width="20" height="20" class="stroke-neutral-600" data-buttontoggle-inactive/>
+            </ButtonToggle>
         )}
     </div>
 
@@ -53,13 +53,31 @@ const showPasswordToggle = type === 'password' && passwordToggle;
     
 </div>
 
+<script>
+    const setupInput = (toggleButton: HTMLButtonElement) => {
+        const inputElement = toggleButton.closest('.form-field')?.querySelector<HTMLInputElement>('[data-field-input]');
+        if (!inputElement) return;
+
+        toggleButton.addEventListener("button-toggle:change", (event) => {
+            const { active } = (event as CustomEvent<{ active: boolean }>).detail;
+            inputElement.type = active ? "text" : "password";
+        });
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-toggle="password"]').forEach(setupInput);
+</script>
+
 <style is:global>
 .form-field[data-state="valid"] .field-input {
     border-color: oklch(50.8% 0.118 165.612);
 }
 
 .form-field[data-state="invalid"] .field-input {
-    border-color: oklch(64.6% 0.222 41.116);
+    border-color: oklch(75% 0.183 55.934)
+}
+
+.form-field[data-state="error"] .field-input {
+    border-color: oklch(75% 0.183 55.934)
 }
 
 .form-field[data-state="valid"] .field-label {
@@ -67,7 +85,11 @@ const showPasswordToggle = type === 'password' && passwordToggle;
 }
 
 .form-field[data-state="invalid"] .field-label {
-    color: oklch(64.6% 0.222 41.116);
+    color: oklch(75% 0.183 55.934)
+}
+
+.form-field[data-state="error"] .field-label {
+    color: oklch(75% 0.183 55.934)
 }
 
 input:-webkit-autofill,
@@ -108,5 +130,9 @@ input:-webkit-autofill:active {
 
 .form-field[data-req-length="true"] [data-requirement="length"] {
     color: oklch(50.8% 0.118 165.612);
+}
+
+.form-field[data-state="error"] [data-requirement] {
+    color: oklch(43.9% 0 0) !important; /* mismo neutral que usas en el resto del texto */
 }
 </style>

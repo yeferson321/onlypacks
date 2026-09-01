@@ -2,38 +2,54 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro/zod";
 import PBKDF2Lite from "pbkdf2-lite";
 import { supabase } from '@/lib/supabase';
-import { ENV } from "@/lib/env";
+import { normalize, FIELD_LIMITS, NAME_PATTERN, hasWhitespace, hasDoubleSpaces, hasRepeatedChars, isValidEmailShape, getPasswordRequirements } from "@/components/common/form/rules";
 
 const hasher = new PBKDF2Lite();
 
-const normalize = (value: string) => value.normalize("NFC");
+const normalized = (schema: z.ZodString) =>
+    z.preprocess((value) => (typeof value === "string" ? normalize(value) : value), schema);
+
+const email = normalized(
+    z.string()
+        .min(FIELD_LIMITS.email.minLength).max(FIELD_LIMITS.email.maxLength)
+        .refine(isValidEmailShape)
+);
+
+const name = normalized(
+    z.string()
+        .min(FIELD_LIMITS.name.minLength).max(FIELD_LIMITS.name.maxLength)
+        .refine((value) => NAME_PATTERN.test(value) && !hasDoubleSpaces(value))
+);
+
+const password = normalized(
+    z.string()
+        .min(FIELD_LIMITS.password.minLength).max(FIELD_LIMITS.password.maxLength)
+        .refine((value) => !hasWhitespace(value))
+        .refine((value) => !hasRepeatedChars(value))
+        .refine((value) => {
+            const req = getPasswordRequirements(value);
+            return req.letter && req.number && req.special;
+        })
+);
 
 export const register = defineAction({
-    input: z.object({
-        email: z.string().min(6).max(120),
-        name: z.string().min(2).max(120),
-        password: z.string().min(10).max(64),
-    }),
+    input: z.object({ email, name, password }),
 
     handler: async ({ email, name, password }, context) => {
         const account = {
-            email: normalize(email),
-            name: normalize(name),
-            password_hash: await hasher.hash(normalize(password)),
+            email,
+            name,
+            password_hash: await hasher.hash(password),
         };
 
         const { data, error } = await supabase.from('accounts').insert(account)
 
-        console.log(error)
-
         if (error) {
-            if (error.code === '23505') { // violación de unique en Postgres
-                throw new ActionError({ code: 'CONFLICT', message: 'Ese correo ya está registrado' });
-            }
-
-            throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'No se pudo completar el registro' });
+            throw new ActionError({
+                code: error.code === '23505' ? 'CONFLICT' : 'INTERNAL_SERVER_ERROR',
+                message: 'No se pudo completar el registro',
+            });
         }
-
         // const sesionId = crypto.randomUUID();
 
         // context.cookies.set('sesion_id', sesionId, {
@@ -53,70 +69,3 @@ export const register = defineAction({
         };
     }
 })
-
-
-// import { argon2id, argon2Verify } from "hash-wasm";
-
-
-// async function hash(password: string): Promise<string> {
-//     const salt = crypto.getRandomValues(new Uint8Array(16));
-
-//     return argon2id({
-//         password,
-//         salt,
-//         parallelism: 1,        // Workers son single-threaded, no ganas nada subiendo esto
-//         iterations: 3,         // "time cost" — ajusta según tu límite de CPU
-//         memorySize: 19456,     // en KiB (19456 = ~19 MB) — el parámetro más importante para seguridad
-//         hashLength: 32,
-//         outputType: "encoded", // devuelve el string PHC ya formateado, con salt e iteraciones incluidas
-//     });
-// }
-
-//  console.log("WebAssembly:", typeof WebAssembly);
-
-//         try {
-//           const bytes = new Uint8Array([
-//             0x00, 0x61, 0x73, 0x6d,
-//             0x01, 0x00, 0x00, 0x00
-//           ]);
-      
-//           await WebAssembly.compile(bytes);
-      
-//           console.log("WASM OK");
-//         } catch (e) {
-//           console.error("WASM ERROR", e);
-//         }
-
-//         console.log({MODE: import.meta.env.MODE, DEV: import.meta.env.DEV });
-
-                // const passwordHash = await argon2.hash(normalizedPassword, {
-            //     type: argon2.argon2id,
-            // });
-
-
-            // TODO: Guardar en la base de datos
-            // await db.users.create({
-            //     name: normalize(name),
-            //     password: passwordHash,
-            // });
-
-// export const server = {
-//     getUserByUsername: defineAction({
-//         input: z.object({
-//             username: z.string().trim().min(3).max(30).regex(/^[a-zA-Z0-9._]+$/),
-//         }),
-      
-//         handler: async ({ username }) => {
-
-//             const user = users.find(
-//                 (user) => user.username.toLowerCase() === username.toLowerCase()
-//             );
-          
-//             if (!user) {
-//                 throw new Error("User not found");
-//             }
-          
-//             return user;
-//         },
-//     }),
-// };

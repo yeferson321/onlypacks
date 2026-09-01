@@ -1,20 +1,19 @@
-import type { ValidationContext, ValidationResult, Validator, NameCode, EmailCode, CurrentPasswordCode, NewPasswordCode } from "./types";
+import type { ValidationContext, ValidationResult, Validator, NameCode, EmailCode, CurrentPasswordCode, NewPasswordCode } from './types';
+import { normalize, NAME_PATTERN, hasWhitespace, hasDoubleSpaces, hasRepeatedChars, getPasswordRequirements } from './rules';
 
 const makeResult = <Code extends string>(result: ValidationResult<Code>) => result;
-
-const normalize = (value: string) => value.normalize("NFC").trim();
 
 export const validateName = ({ value, properties, validity }: ValidationContext): ValidationResult<NameCode> => {
     const name = normalize(value);
 
     if (!name) {
-        return properties.required 
+        return properties.required
             ? makeResult({ code: "REQUIRED", state: "invalid" })
             : makeResult({ code: "", state: "" });
     }
 
-    if (!/^[\p{L} '’-]+$/u.test(name)) return makeResult({ code: "INVALID_CHARS", state: "invalid" });
-    if (/ {2,}/.test(name)) return makeResult({ code: "SPACES", state: "invalid" });
+    if (!NAME_PATTERN.test(name)) return makeResult({ code: "INVALID_CHARS", state: "invalid" });
+    if (hasDoubleSpaces(name)) return makeResult({ code: "SPACES", state: "invalid" });
 
     if (name.length < properties.minLength) return makeResult({ code: "TOO_SHORT", state: "invalid" });
     if (name.length > properties.maxLength) return makeResult({ code: "TOO_LONG", state: "invalid" });
@@ -27,12 +26,12 @@ export const validateEmail = ({ value, properties, validity }: ValidationContext
     const email = normalize(value);
 
     if (!email) {
-        return properties.required 
-            ? makeResult({ code: "REQUIRED", state: "invalid" }) 
+        return properties.required
+            ? makeResult({ code: "REQUIRED", state: "invalid" })
             : makeResult({ code: "", state: "" });
     }
 
-    if (/\p{White_Space}/u.test(email)) return makeResult({ code: "NO_SPACES", state: "invalid" });
+    if (hasWhitespace(email)) return makeResult({ code: "NO_SPACES", state: "invalid" });
     if (!email.includes("@")) return makeResult({ code: "MISSING_AT", state: "invalid" });
 
     const [username, domain] = email.split("@");
@@ -44,7 +43,7 @@ export const validateEmail = ({ value, properties, validity }: ValidationContext
     if (!validity.valid) return makeResult({ code: "INVALID", state: "invalid" });
 
     return makeResult({ code: "", state: "valid" });
-}
+};
 
 export const validateCurrentPassword = ({ value, properties, validity }: ValidationContext): ValidationResult<CurrentPasswordCode> => {
     const password = normalize(value);
@@ -74,15 +73,10 @@ export const validateNewPassword = ({ value, properties, validity }: ValidationC
             : makeResult({ code: "", state: "", requirements: {} });
     }
 
-    const requirements = {
-        letter: /\p{L}/u.test(password),
-        number: /\p{Nd}/u.test(password),
-        special: /[\p{P}$+=]/u.test(password),
-        length: password.length >= properties.minLength,
-    };
+    const requirements = getPasswordRequirements(password);
 
-    if (/\p{White_Space}/u.test(password)) return makeResult({ code: "NO_SPACES", state: "invalid", requirements });
-    if (/(.)\1{2,}/u.test(password)) return makeResult({ code: "REPEATED_CHARACTERS", state: "invalid", requirements });
+    if (hasWhitespace(password)) return makeResult({ code: "NO_SPACES", state: "invalid", requirements });
+    if (hasRepeatedChars(password)) return makeResult({ code: "REPEATED_CHARACTERS", state: "invalid", requirements });
     if (!requirements.letter) return makeResult({ code: "", state: "", requirements });
     if (!requirements.number) return makeResult({ code: "", state: "", requirements });
     if (!requirements.special) return makeResult({ code: "", state: "", requirements });

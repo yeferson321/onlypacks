@@ -1,14 +1,14 @@
 ---
 interface Props {
     sidebarId: string;
-    className?: string;
+    class?: string;
     overlayColor?: string;
     offset?: string;
     horizontalPosition?: 'left' | 'right';
     unmount?: boolean;
 };
 
-const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right', unmount = true } = Astro.props;
+const { sidebarId, class: className = "", overlayColor, offset, horizontalPosition = 'right', unmount = true } = Astro.props;
 ---
            
 <div id={`sidebar-${sidebarId}`} class:list={["sidebar", className]} data-sidebar-id={sidebarId} data-state="closed" data-horizontal={horizontalPosition} data-unmount={unmount} tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
@@ -84,7 +84,7 @@ const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right'
 <script>
     import { appendChildElement, removeElement, trapFocus } from '@/components/common/utils/dom';
 
-    document.querySelectorAll<HTMLDivElement>(".sidebar").forEach((sidebarElement) => {
+    const setupSidebar = (sidebarElement: HTMLDivElement) => {
         const { sidebarId, unmount } = sidebarElement.dataset; 
         if (!sidebarId) throw new Error('Missing "data-sidebar-id" attribute on Sidebar component');
 
@@ -146,5 +146,7 @@ const { sidebarId, className, overlayColor, offset, horizontalPosition = 'right'
         closeButtonElement?.addEventListener("click", hideSidebar);
         window.addEventListener(`sidebar:show:${sidebarId}`, showSidebar);
         window.addEventListener(`sidebar:hide:${sidebarId}`, hideSidebar);
-    });
+    };
+
+    document.querySelectorAll<HTMLDivElement>(".sidebar").forEach(setupSidebar);
 </script>

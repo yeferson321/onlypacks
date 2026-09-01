@@ -1,14 +1,14 @@
 ---
 interface Props {
     modalId: string;
-    className?: string;
+    class?: string;
     overlayColor?: string;
     offset?: string;
     verticalPosition?: 'top' | 'center' | 'bottom';
     unmount?: boolean;
 };
 
-const { modalId, className, overlayColor, offset, verticalPosition = 'center', unmount = false } = Astro.props;
+const { modalId, class: className = "", overlayColor, offset, verticalPosition = 'center', unmount = false } = Astro.props;
 ---
            
 <div id={modalId} class:list={["modal", className]} data-modal-id={modalId} data-state="closed" data-vertical={verticalPosition} data-unmount={unmount} aria-labelledby={`${modalId}-title`} tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true">
@@ -83,7 +83,7 @@ const { modalId, className, overlayColor, offset, verticalPosition = 'center', u
 <script>
     import { appendChildElement, removeElement, trapFocus } from '@/components/common/utils/dom';
 
-    document.querySelectorAll<HTMLDivElement>(".modal").forEach((modalElement) => {
+    const setupElementToggle = (modalElement: HTMLDivElement) => {
         const { modalId, unmount } = modalElement.dataset;
         if (!modalId) throw new Error('Missing "data-modal-id" attribute on Modal component');
 
@@ -145,5 +145,7 @@ const { modalId, className, overlayColor, offset, verticalPosition = 'center', u
         closeButtonElement?.addEventListener("click", hideModal);
         window.addEventListener(`modal:show:${modalId}`, showModal);
         window.addEventListener(`modal:hide:${modalId}`, hideModal);
-    });
+    };
+
+    document.querySelectorAll<HTMLDivElement>(".modal").forEach(setupElementToggle);
 </script>

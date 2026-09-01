@@ -1,10 +1,10 @@
 ---
 import type { Translation } from '@/i18n/config';
-import Input from '../Input.astro';
+import { FIELD_LIMITS } from '@/components/common/form/rules';
+import Input from '@/components/common/Input.astro';
+import ButtonToggle from '@/components/common/ButtonToggle.astro';
 import IconCheckCircle from '@/icons/outline/IconCheckCircle.svg';
 import IconInformationCircle from '@/icons/outline/IconInformationCircle.svg';
-
-import ElementToggle from '@/components/common/ElementToggle.astro';
 
 interface Props {
 	translations: Translation.SignUpForm;
@@ -19,17 +19,17 @@ const { translations } = Astro.props;
 
 <form id="signup-form" class="mt-6 space-y-4">
 
-    <Input type="email" name="email" autocomplete="email" spellcheck="false" minlength={6} maxlength={120} required={true} 
+    <Input type="email" name="email" autocomplete="email" spellcheck="false" minlength={FIELD_LIMITS.email.minLength} maxlength={FIELD_LIMITS.email.maxLength} required={true} 
         label={translations.form.fields.email.label} 
         messages={translations.form.fields.email.validation}
     />
 
-    <Input type="text" name="name" autocomplete="name" spellcheck="false" minlength={2} maxlength={120} required={true} 
+    <Input type="text" name="name" autocomplete="name" spellcheck="false" minlength={FIELD_LIMITS.name.minLength} maxlength={FIELD_LIMITS.name.maxLength} required={true} 
         label={translations.form.fields.name.label} 
         messages={translations.form.fields.name.validation}
     />
 
-    <Input type="password" name="password" autocomplete="new-password" minlength={10} maxlength={64} required={true} 
+    <Input type="password" name="password" autocomplete="new-password" minlength={FIELD_LIMITS.password.minLength} maxlength={FIELD_LIMITS.password.maxLength} required={true} 
         label={translations.form.fields.newPassword.label} 
         messages={translations.form.fields.newPassword.validation} 
         passwordToggle={{
@@ -65,19 +65,21 @@ const { translations } = Astro.props;
 
     </Input>
 
-    <div class="form-feedback flex items-start mx-2 text-orange-600"> 
+    <div class="form-feedback flex items-start mx-2 text-orange-400"> 
         <IconInformationCircle stroke-width="1.6" width="14" height="14" class="shrink-0 me-1 mt-0.5" aria-hidden="true" /> 
         <span class="form-feedback-message text-sm" aria-live="polite" data-form-feedback data-state="valid"></span> 
     </div>
-    
-    <ElementToggle type="submit" class="w-full h-11 px-2 rounded-3xl flex items-center justify-center text-lg font-medium text-white bg-blue-500 transition-opacity duration-300 ease-in-out disabled:opacity-20 disabled:cursor-not-allowed disabled:pointer-events-none" data-toggle="submit" disabled ariaLabelActive="" ariaLabelInactive="">
-        <span class="" data-element-active>{translations.form.actions.submit}</span>
 
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icons-tabler-outline icon-tabler-loader-4 size-6 animate-spin hidden" data-element-inactive>
+    <ButtonToggle toggleId="submit" type="submit" class="w-full h-11 px-2 rounded-3xl flex items-center justify-center text-lg font-medium text-white bg-blue-500 transition-opacity duration-300 ease-in-out disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-none" data-toggle="submit" ariaLabelActive="" ariaLabelInactive="" disabled>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icons-tabler-outline icon-tabler-loader-4 size-6 animate-spin hidden" data-buttontoggle-active>
         	<path stroke="none" d="M0 0h24v24H0z" fill="none" />
         	<path d="M12 21v-3m6.36 .36l-2.12 -2.12m4.76 -4.24h-3m.36 -6.36l-2.12 2.12m-4.24 -4.76v3m-6.36 -.36l2.12 2.12m-3.76 4.24h2m1 4.95l.71 -.71" />
         </svg>
-    </ElementToggle>
+
+        <span class="" data-buttontoggle-inactive>{translations.form.actions.submit}</span>
+
+    </ButtonToggle>
         			    
 </form>
 
@@ -96,27 +98,27 @@ const { translations } = Astro.props;
     const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
 
     if (form) {
-        setupForm<SignUpForm>(form, async (data) => {
-
-            // const { email, password } = data as SignUpForm;
-
+        const { setServerError } = setupForm<SignUpForm>(form, async (data) => {
             const { data: result, error } = await actions.register(data);
 
-            console.log("formData", data, "result", result, "error", error);
+            if (error) {
+                if (formFeedback) {
+                    formFeedback.textContent = error.message;
+                    formFeedback.dataset.state = "error";
+                }
 
-            if (error && formFeedback) {
-
-                console.log("hola", formFeedback)
-
-                formFeedback.textContent = error.message;
-                formFeedback.dataset.state = "invalid";
-
-                submitButton?.dispatchEvent(new CustomEvent("element-toggle:toggle", { bubbles: true }));
-
+                setServerError();
+                submitButton?.dispatchEvent(new CustomEvent("button-toggle:deactivate:submit", { bubbles: true }));
                 return;
             }
+        });
 
-           
+        // limpia el mensaje de error del servidor en cuanto el usuario empieza a corregir
+        form.addEventListener("input", () => {
+            if (formFeedback?.dataset.state !== "error") return;
+
+            formFeedback.textContent = "";
+            formFeedback.dataset.state = "valid";
         });
     }
 </script>
@@ -126,7 +128,7 @@ const { translations } = Astro.props;
     display: none;
 }
 
-.form-feedback:has(.form-feedback-message[data-state="invalid"]) {
+.form-feedback:has(.form-feedback-message[data-state="error"]) {
     display: flex;
 }
 </style>
